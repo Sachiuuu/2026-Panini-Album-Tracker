@@ -1,6 +1,6 @@
 export const ALBUM_SCHEMA_VERSION = 1 as const;
 
-export type SectionKind = 'cover' | 'intro' | 'stadiums' | 'group';
+export type SectionKind = 'specials' | 'group' | 'cocacola';
 
 export type GroupLetter =
   | 'A' | 'B' | 'C' | 'D'
@@ -13,13 +13,11 @@ export const GROUP_LETTERS: GroupLetter[] = [
 ];
 
 export type StickerKind =
-  | 'cover'
-  | 'intro'
-  | 'stadium'
+  | 'special'
   | 'emblem'
   | 'lineup'
   | 'player'
-  | 'legend';
+  | 'cocacola';
 
 export interface Sticker {
   id: string;

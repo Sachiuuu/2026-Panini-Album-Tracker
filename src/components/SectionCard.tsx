@@ -14,10 +14,9 @@ interface Props {
 
 function iconForSection(kind: Section['kind']): keyof typeof Ionicons.glyphMap {
   switch (kind) {
-    case 'cover': return 'book';
-    case 'intro': return 'sparkles';
-    case 'stadiums': return 'business';
+    case 'specials': return 'sparkles';
     case 'group': return 'people';
+    case 'cocacola': return 'wine';
   }
 }
 

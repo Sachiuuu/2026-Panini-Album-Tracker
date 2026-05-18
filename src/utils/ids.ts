@@ -7,9 +7,8 @@ export function makeGroupSectionId(letter: string): string {
 }
 
 export const SECTION_IDS = {
-  cover: 'cover',
-  intro: 'intro',
-  stadiums: 'stadiums',
+  specials: 'specials',
+  cocacola: 'cocacola',
 } as const;
 
 export function teamEmblemCode(teamCode: string): string {

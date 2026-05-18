@@ -34,9 +34,8 @@ export const es = {
   },
 
   section: {
-    cover: 'Portada',
-    intro: 'Introducción',
-    stadiums: 'Estadios',
+    specials: 'Especiales',
+    cocacola: 'Coca-Cola',
     group: 'Grupo',
     teamsInGroup: 'Equipos del grupo',
   },

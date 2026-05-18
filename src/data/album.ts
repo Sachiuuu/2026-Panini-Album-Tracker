@@ -5,19 +5,24 @@ import {
   Album,
   Section,
   Sticker,
+  StickerKind,
   Team,
 } from './schema';
 import { GROUPS } from './groups';
-import { COVER_STICKERS, INTRO_STICKERS, STADIUM_STICKERS } from './specialSections';
+import {
+  COCACOLA_STICKERS,
+  SPECIAL_STICKERS,
+  SpecialStickerSeed,
+} from './specialSections';
 import { getStickerCountForTeam } from './stickerCounts';
 import { TEAMS, TEAMS_BY_GROUP } from './teams';
 
-function makeSpecialSection(
+function makeFlatSection(
   id: string,
   title: string,
   kind: Section['kind'],
-  seeds: { code: string; label: string }[],
-  stickerKind: Sticker['kind'],
+  seeds: SpecialStickerSeed[],
+  stickerKind: StickerKind,
 ): Section {
   const stickers: Sticker[] = seeds.map((s) => ({
     id: makeStickerId(id, s.code),
@@ -81,19 +86,17 @@ function buildAlbum(): Album {
   const sections: Section[] = [];
 
   sections.push(
-    makeSpecialSection('cover', es.section.cover, 'cover', COVER_STICKERS, 'cover'),
-  );
-  sections.push(
-    makeSpecialSection('intro', es.section.intro, 'intro', INTRO_STICKERS, 'intro'),
-  );
-  sections.push(
-    makeSpecialSection('stadiums', es.section.stadiums, 'stadiums', STADIUM_STICKERS, 'stadium'),
+    makeFlatSection('specials', es.section.specials, 'specials', SPECIAL_STICKERS, 'special'),
   );
 
   for (const group of GROUPS) {
     const teams = TEAMS_BY_GROUP[group.letter] ?? [];
     sections.push(makeGroupSection(group.letter, teams));
   }
+
+  sections.push(
+    makeFlatSection('cocacola', es.section.cocacola, 'cocacola', COCACOLA_STICKERS, 'cocacola'),
+  );
 
   let albumIndex = 0;
   const stickerById: Record<string, Sticker> = {};

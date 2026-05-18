@@ -73,7 +73,7 @@ export const useAlbumActions = () =>
 
 const STICKERS_BY_KIND: Record<StickerKind, Sticker[]> = (() => {
   const map: Record<StickerKind, Sticker[]> = {
-    cover: [], intro: [], stadium: [], emblem: [], lineup: [], player: [], legend: [],
+    special: [], emblem: [], lineup: [], player: [], cocacola: [],
   };
   for (const sticker of Object.values(ALBUM.stickerById)) {
     map[sticker.kind].push(sticker);
