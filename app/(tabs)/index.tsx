@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { GroupSectionCard } from '../../src/components/GroupSectionCard';
 import { ProgressBar } from '../../src/components/ProgressBar';
 import { SectionCard } from '../../src/components/SectionCard';
 import { StatsDashboard } from '../../src/components/StatsDashboard';
@@ -39,13 +40,17 @@ export default function AlbumHome() {
       <Text style={styles.sectionHeader}>{es.home.sectionsHeader}</Text>
 
       <View style={styles.list}>
-        {ALBUM.sections.map((section) => (
-          <SectionCard
-            key={section.id}
-            section={section}
-            onPress={() => router.push(`/section/${section.id}`)}
-          />
-        ))}
+        {ALBUM.sections.map((section) =>
+          section.kind === 'group' ? (
+            <GroupSectionCard key={section.id} section={section} />
+          ) : (
+            <SectionCard
+              key={section.id}
+              section={section}
+              onPress={() => router.push(`/section/${section.id}`)}
+            />
+          ),
+        )}
       </View>
     </ScrollView>
   );
