@@ -1,8 +1,8 @@
 export const es = {
-  appName: 'Panini 2026 Tracker',
+  appName: 'WC 2026 Sticker Tracker',
 
   tabs: {
-    album: 'Álbum',
+    album: 'Inicio',
     search: 'Buscar',
     settings: 'Ajustes',
   },
@@ -20,7 +20,7 @@ export const es = {
   },
 
   home: {
-    title: 'Mi Álbum',
+    title: 'WC 2026 Sticker Tracker',
     sectionsHeader: 'Secciones',
     stats: {
       collected: 'Obtenidas',
