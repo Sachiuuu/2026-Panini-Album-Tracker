@@ -5,7 +5,7 @@ import { es } from '../i18n/es';
 import { colors } from '../theme/colors';
 import { spacing, typography } from '../theme/typography';
 import { formatFraction, formatPercent } from '../utils/format';
-import { CountryBadge } from './CountryBadge';
+import { Flag } from './Flag';
 import { ProgressBar } from './ProgressBar';
 
 interface Props {
@@ -20,7 +20,7 @@ export function TeamHeader({ team, owned, total, pct }: Props) {
   return (
     <View style={[styles.container, { backgroundColor: style.primary }]}>
       <View style={styles.topRow}>
-        <CountryBadge code={team.countryCode} size={64} />
+        <Flag code={team.countryCode} height={44} />
         <View style={styles.titleBlock}>
           <Text style={[styles.name, { color: style.text }]} numberOfLines={1}>
             {team.name}

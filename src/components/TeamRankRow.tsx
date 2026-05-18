@@ -3,7 +3,7 @@ import { Team } from '../data/schema';
 import { colors } from '../theme/colors';
 import { radius, spacing, typography } from '../theme/typography';
 import { formatFraction, formatPercent } from '../utils/format';
-import { CountryBadge } from './CountryBadge';
+import { Flag } from './Flag';
 import { ProgressBar } from './ProgressBar';
 
 interface Props {
@@ -23,7 +23,7 @@ export function TeamRankRow({ rank, team, owned, total, pct, onPress, tint }: Pr
       style={({ pressed }) => [styles.row, pressed && { opacity: 0.85 }]}
     >
       <Text style={styles.rank}>{rank}</Text>
-      <CountryBadge code={team.countryCode} size={32} />
+      <Flag code={team.countryCode} height={22} />
       <View style={styles.body}>
         <View style={styles.titleRow}>
           <Text style={styles.name} numberOfLines={1}>

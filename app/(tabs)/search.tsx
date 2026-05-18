@@ -2,8 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { CountryBadge } from '../../src/components/CountryBadge';
 import { EmptyState } from '../../src/components/EmptyState';
+import { Flag } from '../../src/components/Flag';
 import { SearchBar } from '../../src/components/SearchBar';
 import { ALBUM } from '../../src/data/album';
 import { Sticker, Team } from '../../src/data/schema';
@@ -111,7 +111,7 @@ export default function Search() {
                     pressed && { opacity: 0.85 },
                   ]}
                 >
-                  <CountryBadge code={team.countryCode} size={36} />
+                  <Flag code={team.countryCode} height={24} />
                   <View style={styles.rowBody}>
                     <Text style={styles.rowTitle}>{team.name}</Text>
                     <Text style={styles.rowHint}>

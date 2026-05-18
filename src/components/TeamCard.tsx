@@ -5,7 +5,7 @@ import { Team } from '../data/schema';
 import { colors } from '../theme/colors';
 import { radius, spacing, typography } from '../theme/typography';
 import { formatFraction, formatPercent } from '../utils/format';
-import { CountryBadge } from './CountryBadge';
+import { Flag } from './Flag';
 import { ProgressBar } from './ProgressBar';
 
 interface Props {
@@ -27,7 +27,7 @@ export function TeamCard({ team, owned, total, pct, onPress }: Props) {
       ]}
     >
       <View style={styles.row}>
-        <CountryBadge code={team.countryCode} size={44} />
+        <Flag code={team.countryCode} height={30} />
         <View style={styles.body}>
           <Text style={[styles.name, { color: style.text }]} numberOfLines={1}>
             {team.name}
