@@ -1,5 +1,14 @@
 import { es } from '../i18n/es';
-import { makeStickerId, teamEmblemCode, teamLineupCode, teamPlayerCode } from '../utils/ids';
+import {
+  EMBLEM_INDEX,
+  LINEUP_INDEX,
+  makeStickerId,
+  playerOrdinal,
+  teamEmblemCode,
+  teamLineupCode,
+  teamPlayerCode,
+  TEAM_STICKER_INDICES,
+} from '../utils/ids';
 import {
   ALBUM_SCHEMA_VERSION,
   Album,
@@ -14,7 +23,6 @@ import {
   SPECIAL_STICKERS,
   SpecialStickerSeed,
 } from './specialSections';
-import { getStickerCountForTeam } from './stickerCounts';
 import { TEAMS, TEAMS_BY_GROUP } from './teams';
 
 function makeFlatSection(
@@ -41,40 +49,31 @@ function makeGroupSection(letter: string, teams: Team[]): Section {
   const stickers: Sticker[] = [];
 
   for (const team of teams) {
-    const count = getStickerCountForTeam(team.code);
-    const emblem = teamEmblemCode(team.code);
-    const lineup = teamLineupCode(team.code);
-
-    stickers.push({
-      id: makeStickerId(sectionId, emblem),
-      code: emblem,
-      albumIndex: 0,
-      sectionId,
-      kind: 'emblem',
-      teamCode: team.code,
-      label: `${team.name} — Escudo`,
-    });
-
-    stickers.push({
-      id: makeStickerId(sectionId, lineup),
-      code: lineup,
-      albumIndex: 0,
-      sectionId,
-      kind: 'lineup',
-      teamCode: team.code,
-      label: `${team.name} — Foto de equipo`,
-    });
-
-    for (let n = 2; n < count; n++) {
-      const code = teamPlayerCode(team.code, n);
+    for (const n of TEAM_STICKER_INDICES) {
+      let kind: StickerKind;
+      let label: string;
+      let code: string;
+      if (n === EMBLEM_INDEX) {
+        kind = 'emblem';
+        code = teamEmblemCode(team.code);
+        label = `${team.name} — Escudo`;
+      } else if (n === LINEUP_INDEX) {
+        kind = 'lineup';
+        code = teamLineupCode(team.code);
+        label = `${team.name} — Foto de equipo`;
+      } else {
+        kind = 'player';
+        code = teamPlayerCode(team.code, n);
+        label = `${team.name} — Jugador ${playerOrdinal(n)}`;
+      }
       stickers.push({
         id: makeStickerId(sectionId, code),
         code,
         albumIndex: 0,
         sectionId,
-        kind: 'player',
+        kind,
         teamCode: team.code,
-        label: `${team.name} — Jugador ${n - 1}`,
+        label,
       });
     }
   }
