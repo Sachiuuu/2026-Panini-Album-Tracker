@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SectionCard } from '../../src/components/SectionCard';
 import { ProgressBar } from '../../src/components/ProgressBar';
+import { SectionCard } from '../../src/components/SectionCard';
+import { StatsDashboard } from '../../src/components/StatsDashboard';
 import { ALBUM } from '../../src/data/album';
 import { es } from '../../src/i18n/es';
 import { useGlobalProgress } from '../../src/store/selectors';
@@ -32,6 +33,8 @@ export default function AlbumHome() {
           </Text>
         </View>
       </View>
+
+      <StatsDashboard />
 
       <Text style={styles.sectionHeader}>{es.home.sectionsHeader}</Text>
 
