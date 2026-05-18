@@ -1,36 +1,38 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { es } from '../../src/i18n/es';
+import { colors } from '../../src/theme/colors';
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerStyle: { backgroundColor: '#0b1220' },
-        headerTintColor: '#ffffff',
+        headerStyle: { backgroundColor: colors.bg },
+        headerTintColor: colors.textPrimary,
         headerTitleStyle: { fontWeight: '700' },
-        tabBarStyle: { backgroundColor: '#0b1220', borderTopColor: '#1f2937' },
-        tabBarActiveTintColor: '#fbbf24',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarStyle: { backgroundColor: colors.bg, borderTopColor: colors.border },
+        tabBarActiveTintColor: colors.accent,
+        tabBarInactiveTintColor: colors.textMuted,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Álbum',
+          title: es.tabs.album,
           tabBarIcon: ({ color, size }) => <Ionicons name="albums" color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Buscar',
+          title: es.tabs.search,
           tabBarIcon: ({ color, size }) => <Ionicons name="search" color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Ajustes',
+          title: es.tabs.settings,
           tabBarIcon: ({ color, size }) => <Ionicons name="settings" color={color} size={size} />,
         }}
       />

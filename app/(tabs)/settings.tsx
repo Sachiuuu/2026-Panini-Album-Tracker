@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { es } from '../../src/i18n/es';
+import { colors } from '../../src/theme/colors';
+import { spacing, typography } from '../../src/theme/typography';
 
 export default function Settings() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.text}>Exportar, importar y reiniciar el progreso.</Text>
+      <Text style={styles.text}>{es.settings.title}</Text>
     </View>
   );
 }
@@ -11,10 +14,10 @@ export default function Settings() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#0b1220',
+    backgroundColor: colors.bg,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xl,
   },
-  text: { color: '#9ca3af' },
+  text: { ...typography.h2, color: colors.textSecondary },
 });

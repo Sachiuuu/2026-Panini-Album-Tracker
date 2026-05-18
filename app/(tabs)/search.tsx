@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { es } from '../../src/i18n/es';
+import { colors } from '../../src/theme/colors';
+import { spacing, typography } from '../../src/theme/typography';
 
 export default function Search() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.text}>Buscar por país o código de lámina.</Text>
+      <Text style={styles.text}>{es.search.typeToSearch}</Text>
     </View>
   );
 }
@@ -11,10 +14,10 @@ export default function Search() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#0b1220',
+    backgroundColor: colors.bg,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xl,
   },
-  text: { color: '#9ca3af' },
+  text: { ...typography.body, color: colors.textMuted, textAlign: 'center' },
 });

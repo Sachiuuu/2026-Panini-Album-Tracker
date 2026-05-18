@@ -1,9 +1,12 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { es } from '../../src/i18n/es';
+import { colors } from '../../src/theme/colors';
+import { radius, spacing, typography } from '../../src/theme/typography';
 
 export default function AlbumHome() {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Mi Álbum</Text>
+      <Text style={styles.title}>{es.home.title}</Text>
       <View style={styles.placeholder}>
         <Text style={styles.placeholderText}>El álbum aparecerá aquí.</Text>
       </View>
@@ -12,14 +15,14 @@ export default function AlbumHome() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#0b1220' },
-  content: { padding: 16, gap: 16 },
-  title: { color: '#ffffff', fontSize: 24, fontWeight: '700' },
+  screen: { flex: 1, backgroundColor: colors.bg },
+  content: { padding: spacing.lg, gap: spacing.lg },
+  title: { ...typography.h1, color: colors.textPrimary },
   placeholder: {
-    padding: 24,
-    backgroundColor: '#111827',
-    borderRadius: 12,
+    padding: spacing.xl,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     alignItems: 'center',
   },
-  placeholderText: { color: '#9ca3af' },
+  placeholderText: { ...typography.body, color: colors.textMuted },
 });
