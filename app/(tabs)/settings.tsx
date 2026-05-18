@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ALBUM } from '../../src/data/album';
 import { es } from '../../src/i18n/es';
 import { useAlbumStore } from '../../src/store/useAlbumStore';
 import { colors } from '../../src/theme/colors';
@@ -54,7 +56,26 @@ export default function Settings() {
   const owned = useAlbumStore((s) => s.owned);
   const replaceOwned = useAlbumStore((s) => s.replaceOwned);
   const mergeOwned = useAlbumStore((s) => s.mergeOwned);
+  const resetAll = useAlbumStore((s) => s.resetAll);
   const [busy, setBusy] = useState(false);
+
+  const handleReset = () => {
+    Alert.alert(
+      es.resetDialog.title,
+      es.resetDialog.message,
+      [
+        { text: es.resetDialog.cancel, style: 'cancel' },
+        {
+          text: es.resetDialog.confirm,
+          style: 'destructive',
+          onPress: () => resetAll(),
+        },
+      ],
+    );
+  };
+
+  const appVersion =
+    (Constants.expoConfig?.version as string | undefined) ?? '0.1.0';
 
   const handleExport = async () => {
     if (busy) return;
@@ -134,6 +155,29 @@ export default function Settings() {
           disabled={busy}
         />
       </View>
+
+      <View style={styles.group}>
+        <Row
+          icon="trash"
+          title={es.settings.reset}
+          hint={es.settings.resetHint}
+          onPress={handleReset}
+          destructive
+          disabled={busy}
+        />
+      </View>
+
+      <View style={styles.about}>
+        <Text style={styles.aboutTitle}>{es.settings.about}</Text>
+        <View style={styles.aboutRow}>
+          <Text style={styles.aboutLabel}>{es.settings.version}</Text>
+          <Text style={styles.aboutValue}>{appVersion}</Text>
+        </View>
+        <View style={styles.aboutRow}>
+          <Text style={styles.aboutLabel}>{es.settings.totalStickers}</Text>
+          <Text style={styles.aboutValue}>{ALBUM.totalStickers}</Text>
+        </View>
+      </View>
     </ScrollView>
   );
 }
@@ -157,4 +201,20 @@ const styles = StyleSheet.create({
   rowBody: { flex: 1, gap: 4, minWidth: 0 },
   rowTitle: { ...typography.bodyBold, color: colors.textPrimary },
   rowHint: { ...typography.small, color: colors.textMuted },
+  about: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    gap: spacing.sm,
+  },
+  aboutTitle: { ...typography.h3, color: colors.textPrimary, marginBottom: spacing.xs },
+  aboutRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  aboutLabel: { ...typography.body, color: colors.textSecondary },
+  aboutValue: { ...typography.bodyBold, color: colors.textPrimary },
 });
