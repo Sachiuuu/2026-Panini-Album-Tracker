@@ -1,5 +1,7 @@
 import { Redirect } from 'expo-router';
+import { useOnboarded } from '../src/store/selectors';
 
 export default function Index() {
-  return <Redirect href="/(tabs)" />;
+  const onboarded = useOnboarded();
+  return <Redirect href={onboarded ? '/(tabs)' : '/onboarding'} />;
 }
