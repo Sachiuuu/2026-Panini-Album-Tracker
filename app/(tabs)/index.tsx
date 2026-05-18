@@ -1,14 +1,48 @@
+import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SectionCard } from '../../src/components/SectionCard';
+import { ProgressBar } from '../../src/components/ProgressBar';
+import { ALBUM } from '../../src/data/album';
 import { es } from '../../src/i18n/es';
+import { useGlobalProgress } from '../../src/store/selectors';
 import { colors } from '../../src/theme/colors';
 import { radius, spacing, typography } from '../../src/theme/typography';
+import { formatFraction, formatPercent } from '../../src/utils/format';
 
 export default function AlbumHome() {
+  const router = useRouter();
+  const progress = useGlobalProgress();
+
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>{es.home.title}</Text>
-      <View style={styles.placeholder}>
-        <Text style={styles.placeholderText}>El álbum aparecerá aquí.</Text>
+
+      <View style={styles.hero}>
+        <View style={styles.heroHeader}>
+          <Text style={styles.heroLabel}>{es.common.complete.toUpperCase()}</Text>
+          <Text style={styles.heroPercent}>{formatPercent(progress.pct)}</Text>
+        </View>
+        <ProgressBar value={progress.pct} height={14} />
+        <View style={styles.heroFooter}>
+          <Text style={styles.heroFraction}>
+            {formatFraction(progress.owned, progress.total)} {es.home.stats.collected.toLowerCase()}
+          </Text>
+          <Text style={styles.heroFraction}>
+            {progress.missing} {es.home.stats.missing.toLowerCase()}
+          </Text>
+        </View>
+      </View>
+
+      <Text style={styles.sectionHeader}>{es.home.sectionsHeader}</Text>
+
+      <View style={styles.list}>
+        {ALBUM.sections.map((section) => (
+          <SectionCard
+            key={section.id}
+            section={section}
+            onPress={() => router.push(`/section/${section.id}`)}
+          />
+        ))}
       </View>
     </ScrollView>
   );
@@ -16,13 +50,48 @@ export default function AlbumHome() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: spacing.lg, gap: spacing.lg },
+  content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
   title: { ...typography.h1, color: colors.textPrimary },
-  placeholder: {
-    padding: spacing.xl,
+
+  hero: {
     backgroundColor: colors.surface,
+    padding: spacing.lg,
     borderRadius: radius.lg,
-    alignItems: 'center',
+    gap: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  placeholderText: { ...typography.body, color: colors.textMuted },
+  heroHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  heroLabel: {
+    ...typography.smallBold,
+    color: colors.textMuted,
+    letterSpacing: 1,
+  },
+  heroPercent: {
+    ...typography.h1,
+    color: colors.accent,
+  },
+  heroFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: spacing.xs,
+  },
+  heroFraction: {
+    ...typography.small,
+    color: colors.textSecondary,
+  },
+
+  sectionHeader: {
+    ...typography.h3,
+    color: colors.textPrimary,
+    marginTop: spacing.sm,
+  },
+  list: {
+    gap: spacing.md,
+  },
 });
