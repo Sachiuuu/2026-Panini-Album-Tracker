@@ -30,7 +30,10 @@ function StickerTileBase({ sticker, size = 72 }: Props) {
           opacity: pressed ? 0.85 : 1,
         },
       ]}
-      hitSlop={4}
+      hitSlop={6}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: owned }}
+      accessibilityLabel={sticker.label ?? sticker.code}
     >
       <Text
         style={[

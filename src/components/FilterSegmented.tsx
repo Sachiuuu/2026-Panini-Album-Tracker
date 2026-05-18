@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radius.pill,
-    minHeight: 36,
+    minHeight: 44,
   },
   optionActive: {
     backgroundColor: colors.accent,

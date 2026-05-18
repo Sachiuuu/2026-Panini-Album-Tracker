@@ -28,10 +28,10 @@ export function SearchBar({ value, onChange, placeholder, autoFocus }: Props) {
       {value.length > 0 ? (
         <Pressable
           onPress={() => onChange('')}
-          hitSlop={8}
+          hitSlop={12}
           accessibilityLabel="Limpiar búsqueda"
         >
-          <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+          <Ionicons name="close-circle" size={20} color={colors.textMuted} />
         </Pressable>
       ) : null}
     </View>
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     borderWidth: 1,
     borderColor: colors.border,
+    minHeight: 48,
   },
   input: {
     flex: 1,
