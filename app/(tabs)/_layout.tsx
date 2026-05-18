@@ -3,6 +3,8 @@ import { Tabs } from 'expo-router';
 import { es } from '../../src/i18n/es';
 import { colors } from '../../src/theme/colors';
 
+// PHASE_2: añadir aquí una cuarta tab "Escanear" o un FAB que abra app/scan.tsx.
+// Ver src/scan/README.md para detalles del flujo.
 export default function TabsLayout() {
   return (
     <Tabs

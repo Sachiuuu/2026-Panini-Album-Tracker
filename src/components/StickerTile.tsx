@@ -10,7 +10,9 @@ import { radius, typography } from '../theme/typography';
 interface Props {
   sticker: Sticker;
   size?: number;
-  onScan?: () => void; // PHASE_2: camera scan entry point
+  // PHASE_2: si en el futuro agregamos escaneo con cámara, este callback dispara la cámara
+  // desde un long-press sobre la lámina. Ver src/scan/README.md.
+  onScan?: () => void;
 }
 
 function StickerTileBase({ sticker, size = 72 }: Props) {

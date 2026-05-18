@@ -52,6 +52,7 @@ export const useAlbumStore = create<AlbumState>()(
     {
       name: 'panini-2026-tracker-v1',
       storage: createJSONStorage(() => AsyncStorage),
+      // PHASE_2: al añadir nuevos campos al estado persistido, sube a 2 y maneja la migración.
       version: 1,
       partialize: (state) => ({
         owned: state.owned,
