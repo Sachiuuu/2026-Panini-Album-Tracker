@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Panini 2026 Tracker",
+    "slug": "panini-2026-tracker",
+    "version": "0.1.0",
+    "scheme": "panini2026",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0b3d2e"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.santiago.panini2026tracker"
+    },
+    "android": {
+      "package": "com.santiago.panini2026tracker",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0b3d2e"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
