@@ -1,5 +1,7 @@
+import * as DocumentPicker from 'expo-document-picker';
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import { ALBUM } from '../data/album';
 import { ALBUM_SCHEMA_VERSION } from '../data/schema';
 
 const SCHEMA_NAME = 'panini-2026-tracker';
@@ -50,4 +52,61 @@ export async function exportAlbumToShare(
     dialogTitle: 'Exportar álbum',
     UTI: 'public.json',
   });
+}
+
+export class ImportInvalidError extends Error {}
+export class ImportVersionError extends Error {}
+export class ImportCancelledError extends Error {}
+
+export interface ParsedImport {
+  payload: ExportPayload;
+  ownedMap: Record<string, true>;
+  unknownIds: string[];
+}
+
+function parsePayload(raw: string): ExportPayload {
+  let json: unknown;
+  try {
+    json = JSON.parse(raw);
+  } catch {
+    throw new ImportInvalidError('invalid-json');
+  }
+  if (
+    !json ||
+    typeof json !== 'object' ||
+    (json as ExportPayload).schema !== SCHEMA_NAME ||
+    typeof (json as ExportPayload).version !== 'number' ||
+    !Array.isArray((json as ExportPayload).owned)
+  ) {
+    throw new ImportInvalidError('invalid-shape');
+  }
+  const payload = json as ExportPayload;
+  if (payload.version > ALBUM_SCHEMA_VERSION) {
+    throw new ImportVersionError('version-too-new');
+  }
+  return payload;
+}
+
+export async function pickAndReadAlbum(): Promise<ParsedImport> {
+  const result = await DocumentPicker.getDocumentAsync({
+    type: 'application/json',
+    copyToCacheDirectory: true,
+    multiple: false,
+  });
+  if (result.canceled) throw new ImportCancelledError('cancelled');
+  const asset = result.assets[0];
+  if (!asset?.uri) throw new ImportInvalidError('no-asset');
+
+  const file = new File(asset.uri);
+  if (!file.exists) throw new ImportInvalidError('not-found');
+  const text = await file.text();
+  const payload = parsePayload(text);
+
+  const ownedMap: Record<string, true> = {};
+  const unknownIds: string[] = [];
+  for (const id of payload.owned) {
+    if (ALBUM.stickerById[id]) ownedMap[id] = true;
+    else unknownIds.push(id);
+  }
+  return { payload, ownedMap, unknownIds };
 }

@@ -8,6 +8,10 @@ import { radius, spacing, typography } from '../../src/theme/typography';
 import {
   exportAlbumToShare,
   ExportUnavailableError,
+  ImportCancelledError,
+  ImportInvalidError,
+  ImportVersionError,
+  pickAndReadAlbum,
 } from '../../src/utils/exportImport';
 
 interface RowProps {
@@ -48,6 +52,8 @@ function Row({ icon, title, hint, onPress, destructive, disabled }: RowProps) {
 
 export default function Settings() {
   const owned = useAlbumStore((s) => s.owned);
+  const replaceOwned = useAlbumStore((s) => s.replaceOwned);
+  const mergeOwned = useAlbumStore((s) => s.mergeOwned);
   const [busy, setBusy] = useState(false);
 
   const handleExport = async () => {
@@ -66,6 +72,48 @@ export default function Settings() {
     }
   };
 
+  const handleImport = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const parsed = await pickAndReadAlbum();
+      Alert.alert(
+        es.importDialog.title,
+        es.importDialog.message,
+        [
+          {
+            text: es.importDialog.replace,
+            onPress: () => {
+              replaceOwned(parsed.ownedMap);
+              Alert.alert(es.importDialog.title, es.importDialog.successReplace);
+            },
+          },
+          {
+            text: es.importDialog.merge,
+            onPress: () => {
+              mergeOwned(parsed.ownedMap);
+              Alert.alert(es.importDialog.title, es.importDialog.successMerge);
+            },
+          },
+          { text: es.importDialog.cancel, style: 'cancel' },
+        ],
+      );
+    } catch (err) {
+      if (err instanceof ImportCancelledError) return;
+      if (err instanceof ImportVersionError) {
+        Alert.alert(es.importDialog.errorTitle, es.importDialog.versionTooNew);
+        return;
+      }
+      if (err instanceof ImportInvalidError) {
+        Alert.alert(es.importDialog.errorTitle, es.importDialog.invalidFile);
+        return;
+      }
+      Alert.alert(es.importDialog.errorTitle, String((err as Error).message ?? err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>{es.settings.title}</Text>
@@ -76,6 +124,13 @@ export default function Settings() {
           title={es.settings.export}
           hint={es.settings.exportHint}
           onPress={handleExport}
+          disabled={busy}
+        />
+        <Row
+          icon="cloud-download"
+          title={es.settings.import}
+          hint={es.settings.importHint}
+          onPress={handleImport}
           disabled={busy}
         />
       </View>
