@@ -1,5 +1,4 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { es } from '../i18n/es';
 import {
   ProgressInfo,
@@ -9,44 +8,10 @@ import {
   useTopTeams,
 } from '../store/selectors';
 import { colors } from '../theme/colors';
-import { spacing, typography } from '../theme/typography';
+import { spacing } from '../theme/typography';
 import { formatFraction } from '../utils/format';
+import { CollapsibleRankBlock } from './CollapsibleRankBlock';
 import { StatTile } from './StatTile';
-import { TeamRankRow } from './TeamRankRow';
-
-interface RankBlockProps {
-  title: string;
-  rows: ReturnType<typeof useTopTeams>;
-  tint?: string;
-  empty?: boolean;
-}
-
-function RankBlock({ title, rows, tint, empty }: RankBlockProps) {
-  const router = useRouter();
-  return (
-    <View style={styles.rankBlock}>
-      <Text style={styles.rankTitle}>{title}</Text>
-      {empty ? (
-        <Text style={styles.emptyText}>—</Text>
-      ) : (
-        <View style={styles.rankList}>
-          {rows.map((row, idx) => (
-            <TeamRankRow
-              key={row.team.code}
-              rank={idx + 1}
-              team={row.team}
-              owned={row.owned}
-              total={row.total}
-              pct={row.pct}
-              tint={tint}
-              onPress={() => router.push(`/team/${row.team.code}`)}
-            />
-          ))}
-        </View>
-      )}
-    </View>
-  );
-}
 
 export function StatsDashboard() {
   const global: ProgressInfo = useGlobalProgress();
@@ -89,8 +54,16 @@ export function StatsDashboard() {
         />
       </View>
 
-      <RankBlock title={es.home.stats.top5} rows={top} tint={colors.success} />
-      <RankBlock title={es.home.stats.bottom5} rows={bottom} tint={colors.danger} />
+      <CollapsibleRankBlock
+        title={es.home.stats.top5}
+        rows={top}
+        tint={colors.success}
+      />
+      <CollapsibleRankBlock
+        title={es.home.stats.bottom5}
+        rows={bottom}
+        tint={colors.danger}
+      />
     </View>
   );
 }
@@ -102,20 +75,5 @@ const styles = StyleSheet.create({
   tilesRow: {
     flexDirection: 'row',
     gap: spacing.md,
-  },
-  rankBlock: {
-    gap: spacing.sm,
-    marginTop: spacing.sm,
-  },
-  rankTitle: {
-    ...typography.h3,
-    color: colors.textPrimary,
-  },
-  rankList: {
-    gap: spacing.sm,
-  },
-  emptyText: {
-    ...typography.body,
-    color: colors.textMuted,
   },
 });
