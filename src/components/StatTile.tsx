@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
-import { radius, spacing, typography } from '../theme/typography';
+import { fonts, radius, spacing, typography } from '../theme/typography';
 
 interface Props {
   label: string;
@@ -46,7 +46,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   value: {
-    ...typography.h2,
+    fontFamily: fonts.display,
+    fontSize: 36,
+    lineHeight: 40,
   },
   hint: {
     ...typography.small,
