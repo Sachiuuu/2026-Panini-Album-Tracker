@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { getCountryStyle } from '../data/countryColors';
 import { Team } from '../data/schema';
+import { useStrings } from '../i18n/useStrings';
 import { colors } from '../theme/colors';
 import { radius, spacing, typography } from '../theme/typography';
 import { formatFraction, formatPercent } from '../utils/format';
@@ -17,7 +18,9 @@ interface Props {
 }
 
 export function TeamCard({ team, owned, total, pct, onPress }: Props) {
+  const t = useStrings();
   const style = getCountryStyle(team.countryCode);
+  const name = t.teamNames[team.code] ?? team.name;
   return (
     <Pressable
       onPress={onPress}
@@ -30,7 +33,7 @@ export function TeamCard({ team, owned, total, pct, onPress }: Props) {
         <Flag code={team.countryCode} height={30} />
         <View style={styles.body}>
           <Text style={[styles.name, { color: style.text }]} numberOfLines={1}>
-            {team.name}
+            {name}
           </Text>
           <View style={styles.metaRow}>
             <Text style={[styles.fraction, { color: style.text }]}>

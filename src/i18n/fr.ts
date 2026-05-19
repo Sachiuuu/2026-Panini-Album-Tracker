@@ -108,4 +108,23 @@ export const fr: Strings = {
     fraction: (owned: number, total: number) => `${owned}/${total}`,
     complete: 'complet',
   },
+
+  teamNames: {
+    MEX: 'Mexique',        RSA: 'Afrique du Sud',         KOR: 'Corée du Sud',
+    CZE: 'Rép. tchèque',   CAN: 'Canada',                 BIH: 'Bosnie-Herzégovine',
+    QAT: 'Qatar',          SUI: 'Suisse',                 BRA: 'Brésil',
+    MAR: 'Maroc',          HAI: 'Haïti',                  SCO: 'Écosse',
+    USA: 'États-Unis',     PAR: 'Paraguay',               AUS: 'Australie',
+    TUR: 'Turquie',        GER: 'Allemagne',              CUR: 'Curaçao',
+    CIV: "Côte d'Ivoire",  ECU: 'Équateur',               NED: 'Pays-Bas',
+    JPN: 'Japon',          TUN: 'Tunisie',                SWE: 'Suède',
+    BEL: 'Belgique',       EGY: 'Égypte',                 IRN: 'Iran',
+    NZL: 'Nouvelle-Zélande', ESP: 'Espagne',              CPV: 'Cap-Vert',
+    KSA: 'Arabie saoudite', URU: 'Uruguay',               FRA: 'France',
+    SEN: 'Sénégal',        IRQ: 'Irak',                   NOR: 'Norvège',
+    ARG: 'Argentine',      ALG: 'Algérie',                AUT: 'Autriche',
+    JOR: 'Jordanie',       POR: 'Portugal',               COD: 'RD Congo',
+    UZB: 'Ouzbékistan',    COL: 'Colombie',               ENG: 'Angleterre',
+    CRO: 'Croatie',        GHA: 'Ghana',                  PAN: 'Panama',
+  },
 };

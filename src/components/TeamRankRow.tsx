@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Team } from '../data/schema';
+import { useStrings } from '../i18n/useStrings';
 import { colors } from '../theme/colors';
 import { radius, spacing, typography } from '../theme/typography';
 import { formatFraction, formatPercent } from '../utils/format';
@@ -17,6 +18,8 @@ interface Props {
 }
 
 export function TeamRankRow({ rank, team, owned, total, pct, onPress, tint }: Props) {
+  const t = useStrings();
+  const name = t.teamNames[team.code] ?? team.name;
   return (
     <Pressable
       onPress={onPress}
@@ -27,7 +30,7 @@ export function TeamRankRow({ rank, team, owned, total, pct, onPress, tint }: Pr
       <View style={styles.body}>
         <View style={styles.titleRow}>
           <Text style={styles.name} numberOfLines={1}>
-            {team.name}
+            {name}
           </Text>
           <Text style={[styles.percent, tint ? { color: tint } : null]}>
             {formatPercent(pct)}

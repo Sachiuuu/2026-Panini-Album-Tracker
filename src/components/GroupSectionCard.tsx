@@ -84,7 +84,7 @@ export function GroupSectionCard({ section }: Props) {
             <View style={styles.teamBody}>
               <View style={styles.teamTopRow}>
                 <Text style={styles.teamName} numberOfLines={1}>
-                  {row.team.name}
+                  {t.teamNames[row.team.code] ?? row.team.name}
                 </Text>
                 <Text style={styles.teamPct}>{formatPercent(row.pct)}</Text>
               </View>

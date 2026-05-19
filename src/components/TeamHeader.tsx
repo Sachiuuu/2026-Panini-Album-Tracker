@@ -18,13 +18,14 @@ interface Props {
 export function TeamHeader({ team, owned, total, pct }: Props) {
   const t = useStrings();
   const style = getCountryStyle(team.countryCode);
+  const name = t.teamNames[team.code] ?? team.name;
   return (
     <View style={[styles.container, { backgroundColor: style.primary }]}>
       <View style={styles.topRow}>
         <Flag code={team.countryCode} height={44} />
         <View style={styles.titleBlock}>
           <Text style={[styles.name, { color: style.text }]} numberOfLines={1}>
-            {team.name}
+            {name}
           </Text>
           <Text style={[styles.group, { color: style.text }]}>
             {t.section.group} {team.group}

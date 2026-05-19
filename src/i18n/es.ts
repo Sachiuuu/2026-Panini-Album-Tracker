@@ -74,6 +74,7 @@ export interface Strings {
     fraction: (owned: number, total: number) => string;
     complete: string;
   };
+  teamNames: Record<string, string>;
 }
 
 export const es: Strings = {
@@ -183,5 +184,24 @@ export const es: Strings = {
     percent: (v: number) => `${Math.round(v * 100)}%`,
     fraction: (owned: number, total: number) => `${owned}/${total}`,
     complete: 'completo',
+  },
+
+  teamNames: {
+    MEX: 'México',         RSA: 'Sudáfrica',              KOR: 'República de Corea',
+    CZE: 'República Checa', CAN: 'Canadá',                BIH: 'Bosnia y Herzegovina',
+    QAT: 'Catar',          SUI: 'Suiza',                  BRA: 'Brasil',
+    MAR: 'Marruecos',      HAI: 'Haití',                  SCO: 'Escocia',
+    USA: 'Estados Unidos', PAR: 'Paraguay',               AUS: 'Australia',
+    TUR: 'Turquía',        GER: 'Alemania',               CUR: 'Curazao',
+    CIV: 'Costa de Marfil', ECU: 'Ecuador',               NED: 'Países Bajos',
+    JPN: 'Japón',          TUN: 'Túnez',                  SWE: 'Suecia',
+    BEL: 'Bélgica',        EGY: 'Egipto',                 IRN: 'Irán',
+    NZL: 'Nueva Zelanda',  ESP: 'España',                 CPV: 'Cabo Verde',
+    KSA: 'Arabia Saudita', URU: 'Uruguay',                FRA: 'Francia',
+    SEN: 'Senegal',        IRQ: 'Irak',                   NOR: 'Noruega',
+    ARG: 'Argentina',      ALG: 'Argelia',                AUT: 'Austria',
+    JOR: 'Jordania',       POR: 'Portugal',               COD: 'R.D. Congo',
+    UZB: 'Uzbekistán',     COL: 'Colombia',               ENG: 'Inglaterra',
+    CRO: 'Croacia',        GHA: 'Ghana',                  PAN: 'Panamá',
   },
 };

@@ -37,11 +37,13 @@ export default function Search() {
     const q = normalize(debouncedQuery.trim());
     if (!q) return [];
 
-    const matchedTeams = TEAMS.filter((t) => {
+    const matchedTeams = TEAMS.filter((team) => {
+      const localName = t.teamNames[team.code] ?? team.name;
       return (
-        normalize(t.name).includes(q) ||
-        normalize(t.code).includes(q) ||
-        normalize(t.countryCode).includes(q)
+        normalize(localName).includes(q) ||
+        normalize(team.name).includes(q) ||
+        normalize(team.code).includes(q) ||
+        normalize(team.countryCode).includes(q)
       );
     });
 
@@ -114,7 +116,7 @@ export default function Search() {
                 >
                   <Flag code={team.countryCode} height={24} />
                   <View style={styles.rowBody}>
-                    <Text style={styles.rowTitle}>{team.name}</Text>
+                    <Text style={styles.rowTitle}>{t.teamNames[team.code] ?? team.name}</Text>
                     <Text style={styles.rowHint}>
                       {team.code} · {t.section.group} {team.group}
                     </Text>
