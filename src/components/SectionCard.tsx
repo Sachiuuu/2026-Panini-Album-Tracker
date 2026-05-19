@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingRight: spacing.sm,
   },
   title: {
     ...typography.bodyBold,
@@ -101,7 +102,8 @@ const styles = StyleSheet.create({
     ...typography.smallBold,
     color: colors.accent,
     flexShrink: 0,
-    marginLeft: spacing.sm,
+    minWidth: 38,
+    textAlign: 'right',
   },
   subtitle: {
     ...typography.small,

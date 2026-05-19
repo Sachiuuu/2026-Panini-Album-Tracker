@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingRight: spacing.sm,
   },
   title: {
     ...typography.h3,
@@ -142,7 +143,8 @@ const styles = StyleSheet.create({
     ...typography.smallBold,
     color: colors.accent,
     flexShrink: 0,
-    marginLeft: spacing.sm,
+    minWidth: 38,
+    textAlign: 'right',
   },
   fraction: {
     ...typography.small,
@@ -173,6 +175,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: spacing.sm,
+    paddingRight: spacing.sm,
   },
   teamName: {
     ...typography.bodyBold,
@@ -183,7 +186,8 @@ const styles = StyleSheet.create({
     ...typography.smallBold,
     color: colors.success,
     flexShrink: 0,
-    marginLeft: spacing.sm,
+    minWidth: 38,
+    textAlign: 'right',
   },
   teamFraction: {
     ...typography.small,

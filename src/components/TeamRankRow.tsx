@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: spacing.sm,
+    paddingRight: spacing.sm,
   },
   name: {
     ...typography.bodyBold,
@@ -81,7 +82,8 @@ const styles = StyleSheet.create({
     ...typography.smallBold,
     color: colors.accent,
     flexShrink: 0,
-    marginLeft: spacing.sm,
+    minWidth: 38,
+    textAlign: 'right',
   },
   fraction: {
     ...typography.small,

@@ -154,9 +154,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingRight: spacing.sm,
   },
   title: { ...typography.h2, color: colors.textPrimary, flexShrink: 1 },
-  percent: { ...typography.h3, color: colors.accent, flexShrink: 0, marginLeft: spacing.sm },
+  percent: { ...typography.h3, color: colors.accent, flexShrink: 0, minWidth: 52, textAlign: 'right' },
   fraction: { ...typography.small, color: colors.textMuted },
   filterRow: {
     paddingHorizontal: spacing.lg,
