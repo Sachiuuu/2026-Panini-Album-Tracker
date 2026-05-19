@@ -29,14 +29,16 @@ export function StatsDashboard() {
           value={String(global.owned)}
           hint={`${formatPercent(global.pct)} ${t.home.stats.of} ${global.total}`}
           icon="checkmark-circle"
-          tint={colors.success}
+          tint="#4ade80"
+          bgColor="rgba(52,211,100,0.1)"
         />
         <StatTile
           label={t.home.stats.missing.toUpperCase()}
           value={String(global.missing)}
           hint={`${formatPercent(pctOf(global.missing, global.total))} ${t.home.stats.of} ${global.total}`}
           icon="ellipse-outline"
-          tint={colors.danger}
+          tint="#f87171"
+          bgColor="rgba(248,113,113,0.1)"
         />
       </View>
 
@@ -46,14 +48,16 @@ export function StatsDashboard() {
           value={formatPercent(pctOf(emblems.owned, emblems.total))}
           hint={formatFraction(emblems.owned, emblems.total)}
           icon="shield"
-          tint={colors.accent}
+          tint="#fbbf24"
+          bgColor="rgba(251,191,36,0.1)"
         />
         <StatTile
           label={t.home.stats.lineups.toUpperCase()}
           value={formatPercent(pctOf(lineups.owned, lineups.total))}
           hint={formatFraction(lineups.owned, lineups.total)}
           icon="people-circle"
-          tint={colors.accent}
+          tint="#fbbf24"
+          bgColor="rgba(251,191,36,0.1)"
         />
       </View>
 

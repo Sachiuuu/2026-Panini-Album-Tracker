@@ -51,19 +51,21 @@ export function GroupSectionCard({ section }: Props) {
     });
   }, [groupLetter, section.stickers, owned]);
 
+  const groupColor = GROUP_COLORS[groupLetter] ?? colors.surfaceAlt;
+
   return (
     <View style={styles.card}>
-      <View style={styles.header}>
-        <View style={[styles.iconWrap, { backgroundColor: GROUP_COLORS[groupLetter] ?? colors.surfaceAlt }]}>
+      <View style={[styles.header, { backgroundColor: groupColor }]}>
+        <View style={styles.iconWrap}>
           <Text style={styles.groupLetter}>{groupLetter}</Text>
         </View>
         <View style={styles.headerBody}>
           <View style={styles.headerRow}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.percent}>{formatPercent(sectionProgress.pct)}</Text>
+            <Text style={[styles.title, { color: '#ffffff' }]}>{title}</Text>
+            <Text style={[styles.percent, { color: 'rgba(255,255,255,0.9)' }]}>{formatPercent(sectionProgress.pct)}</Text>
           </View>
-          <ProgressBar value={sectionProgress.pct} height={6} />
-          <Text style={styles.fraction}>
+          <ProgressBar value={sectionProgress.pct} height={6} tint="rgba(255,255,255,0.9)" trackColor="rgba(0,0,0,0.2)" />
+          <Text style={[styles.fraction, { color: 'rgba(255,255,255,0.7)' }]}>
             {formatFraction(sectionProgress.owned, sectionProgress.total)}
           </Text>
         </View>
@@ -122,6 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
   groupLetter: {
     fontFamily: fonts.display,

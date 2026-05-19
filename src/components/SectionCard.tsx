@@ -14,6 +14,11 @@ interface Props {
   onPress: () => void;
 }
 
+const SECTION_COLORS: Partial<Record<Section['kind'], { bg: string; text: string; muted: string; icon: string }>> = {
+  specials: { bg: '#F0F1F6', text: '#111111', muted: '#666666', icon: colors.accent },
+  cocacola: { bg: '#F40000', text: '#ffffff', muted: 'rgba(255,255,255,0.7)', icon: '#ffffff' },
+};
+
 function iconForSection(kind: Section['kind']): keyof typeof Ionicons.glyphMap {
   switch (kind) {
     case 'specials': return 'sparkles';
@@ -28,34 +33,40 @@ export function SectionCard({ section, onPress }: Props) {
   const icon = iconForSection(section.kind);
   const complete = progress.total > 0 && progress.owned === progress.total;
   const title = getSectionTitle(section, t);
+  const theme = SECTION_COLORS[section.kind];
 
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [
         styles.card,
+        theme && { backgroundColor: theme.bg, borderColor: theme.bg },
         pressed && { opacity: 0.85 },
       ]}
     >
       <View style={styles.row}>
-        <View style={styles.iconWrap}>
+        <View style={[styles.iconWrap, theme && { backgroundColor: 'rgba(0,0,0,0.1)' }]}>
           <Ionicons
             name={icon}
             size={22}
-            color={complete ? colors.success : colors.accent}
+            color={theme ? theme.icon : (complete ? colors.success : colors.accent)}
           />
         </View>
         <View style={styles.body}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.percent}>{formatPercent(progress.pct)}</Text>
+            <Text style={[styles.title, theme && { color: theme.text }]}>{title}</Text>
+            <Text style={[styles.percent, theme && { color: theme.text }]}>{formatPercent(progress.pct)}</Text>
           </View>
-          <ProgressBar value={progress.pct} />
-          <Text style={styles.subtitle}>
+          <ProgressBar
+            value={progress.pct}
+            tint={theme ? 'rgba(255,255,255,0.9)' : undefined}
+            trackColor={theme ? 'rgba(0,0,0,0.2)' : undefined}
+          />
+          <Text style={[styles.subtitle, theme && { color: theme.muted }]}>
             {formatFraction(progress.owned, progress.total)}
           </Text>
         </View>
-        <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+        <Ionicons name="chevron-forward" size={20} color={theme ? theme.muted : colors.textMuted} />
       </View>
     </Pressable>
   );

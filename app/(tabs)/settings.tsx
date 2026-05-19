@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { useState } from 'react';
-import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ALBUM } from '../../src/data/album';
 import { useStrings } from '../../src/i18n/useStrings';
 import { useAlbumStore } from '../../src/store/useAlbumStore';
@@ -14,6 +14,7 @@ import {
   ImportCancelledError,
   ImportInvalidError,
   ImportVersionError,
+  ParsedImport,
   pickAndReadAlbum,
 } from '../../src/utils/exportImport';
 
@@ -70,24 +71,27 @@ export default function Settings() {
   const mergeOwned = useAlbumStore((s) => s.mergeOwned);
   const resetAll = useAlbumStore((s) => s.resetAll);
   const [busy, setBusy] = useState(false);
+  const [pendingImport, setPendingImport] = useState<ParsedImport | null>(null);
+
+  const appVersion =
+    (Constants.expoConfig?.version as string | undefined) ?? '0.1.0';
 
   const handleReset = () => {
+    if (Platform.OS === 'web') {
+      if (window.confirm(`${t.resetDialog.title}\n${t.resetDialog.message}`)) {
+        resetAll();
+      }
+      return;
+    }
     Alert.alert(
       t.resetDialog.title,
       t.resetDialog.message,
       [
         { text: t.resetDialog.cancel, style: 'cancel' },
-        {
-          text: t.resetDialog.confirm,
-          style: 'destructive',
-          onPress: () => resetAll(),
-        },
+        { text: t.resetDialog.confirm, style: 'destructive', onPress: () => resetAll() },
       ],
     );
   };
-
-  const appVersion =
-    (Constants.expoConfig?.version as string | undefined) ?? '0.1.0';
 
   const handleExport = async () => {
     if (busy) return;
@@ -95,7 +99,9 @@ export default function Settings() {
     try {
       await exportAlbumToShare(owned);
     } catch (err) {
-      if (err instanceof ExportUnavailableError) {
+      if (Platform.OS === 'web') {
+        window.alert(`${t.exportDialog.errorTitle}: ${err instanceof ExportUnavailableError ? t.exportDialog.unavailable : String((err as Error).message ?? err)}`);
+      } else if (err instanceof ExportUnavailableError) {
         Alert.alert(t.exportDialog.errorTitle, t.exportDialog.unavailable);
       } else {
         Alert.alert(t.exportDialog.errorTitle, String((err as Error).message ?? err));
@@ -110,6 +116,11 @@ export default function Settings() {
     setBusy(true);
     try {
       const parsed = await pickAndReadAlbum();
+      if (Platform.OS === 'web') {
+        setPendingImport(parsed);
+        setBusy(false);
+        return;
+      }
       Alert.alert(
         t.importDialog.title,
         t.importDialog.message,
@@ -132,19 +143,23 @@ export default function Settings() {
         ],
       );
     } catch (err) {
-      if (err instanceof ImportCancelledError) return;
-      if (err instanceof ImportVersionError) {
-        Alert.alert(t.importDialog.errorTitle, t.importDialog.versionTooNew);
-        return;
-      }
-      if (err instanceof ImportInvalidError) {
-        Alert.alert(t.importDialog.errorTitle, t.importDialog.invalidFile);
-        return;
-      }
-      Alert.alert(t.importDialog.errorTitle, String((err as Error).message ?? err));
+      if (err instanceof ImportCancelledError) { setBusy(false); return; }
+      const msg = Platform.OS === 'web'
+        ? (title: string, body: string) => window.alert(`${title}: ${body}`)
+        : (title: string, body: string) => Alert.alert(title, body);
+      if (err instanceof ImportVersionError) msg(t.importDialog.errorTitle, t.importDialog.versionTooNew);
+      else if (err instanceof ImportInvalidError) msg(t.importDialog.errorTitle, t.importDialog.invalidFile);
+      else msg(t.importDialog.errorTitle, String((err as Error).message ?? err));
     } finally {
       setBusy(false);
     }
+  };
+
+  const applyImport = (mode: 'replace' | 'merge') => {
+    if (!pendingImport) return;
+    if (mode === 'replace') replaceOwned(pendingImport.ownedMap);
+    else mergeOwned(pendingImport.ownedMap);
+    setPendingImport(null);
   };
 
   return (
@@ -187,6 +202,33 @@ export default function Settings() {
           disabled={busy}
         />
       </View>
+
+      {pendingImport && (
+        <View style={styles.importCard}>
+          <Text style={styles.importCardTitle}>{t.importDialog.title}</Text>
+          <Text style={styles.importCardMsg}>{t.importDialog.message}</Text>
+          <View style={styles.importBtns}>
+            <Pressable
+              style={({ pressed }) => [styles.importBtn, pressed && { opacity: 0.8 }]}
+              onPress={() => applyImport('replace')}
+            >
+              <Text style={styles.importBtnText}>{t.importDialog.replace}</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.importBtn, styles.importBtnSecondary, pressed && { opacity: 0.8 }]}
+              onPress={() => applyImport('merge')}
+            >
+              <Text style={[styles.importBtnText, { color: colors.accent }]}>{t.importDialog.merge}</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.importBtnCancel, pressed && { opacity: 0.8 }]}
+              onPress={() => setPendingImport(null)}
+            >
+              <Text style={styles.importCancelText}>{t.importDialog.cancel}</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
 
       <View style={styles.group}>
         <Row
@@ -233,10 +275,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
-  langRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
+  langRow: { flexDirection: 'row', gap: spacing.sm },
   langBtn: {
     flex: 1,
     paddingVertical: spacing.sm,
@@ -247,17 +286,9 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     alignItems: 'center',
   },
-  langBtnActive: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
-  },
-  langBtnText: {
-    ...typography.smallBold,
-    color: colors.textSecondary,
-  },
-  langBtnTextActive: {
-    color: colors.bg,
-  },
+  langBtnActive: { backgroundColor: colors.accent, borderColor: colors.accent },
+  langBtnText: { ...typography.smallBold, color: colors.textSecondary },
+  langBtnTextActive: { color: colors.bg },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -272,6 +303,35 @@ const styles = StyleSheet.create({
   rowBody: { flex: 1, gap: 4, minWidth: 0 },
   rowTitle: { ...typography.bodyBold, color: colors.textPrimary },
   rowHint: { ...typography.small, color: colors.textMuted },
+
+  importCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    gap: spacing.md,
+  },
+  importCardTitle: { ...typography.h3, color: colors.textPrimary },
+  importCardMsg: { ...typography.body, color: colors.textSecondary },
+  importBtns: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
+  importBtn: {
+    flex: 1,
+    backgroundColor: colors.accent,
+    borderRadius: radius.md,
+    paddingVertical: spacing.sm,
+    alignItems: 'center',
+    minWidth: 100,
+  },
+  importBtnSecondary: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: colors.accent,
+  },
+  importBtnText: { ...typography.bodyBold, color: colors.bg },
+  importBtnCancel: { alignSelf: 'center', paddingHorizontal: spacing.md },
+  importCancelText: { ...typography.body, color: colors.textMuted },
+
   about: {
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
@@ -281,17 +341,9 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   aboutTitle: { ...typography.h3, color: colors.textPrimary, marginBottom: spacing.xs },
-  aboutRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+  aboutRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   aboutLabel: { ...typography.body, color: colors.textSecondary },
   aboutValue: { ...typography.bodyBold, color: colors.textPrimary },
-  aboutDivider: {
-    height: 1,
-    backgroundColor: colors.border,
-    marginVertical: spacing.xs,
-  },
+  aboutDivider: { height: 1, backgroundColor: colors.border, marginVertical: spacing.xs },
   link: { color: colors.accent },
 });

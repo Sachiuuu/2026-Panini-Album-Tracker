@@ -3,6 +3,8 @@ import { useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import {
   Animated,
+  Image,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -14,18 +16,60 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStrings } from '../src/i18n/useStrings';
 import { useAlbumStore } from '../src/store/useAlbumStore';
 import { colors } from '../src/theme/colors';
-import { radius, spacing, typography } from '../src/theme/typography';
+import { fonts, radius, spacing, typography } from '../src/theme/typography';
 
-const COUNT = 10;
+const USE_NATIVE_DRIVER = Platform.OS !== 'web';
 
-export default function Onboarding() {
+function WebOnboarding({ onStart }: { onStart: () => void }) {
   const t = useStrings();
-  const router = useRouter();
-  const markOnboarded = useAlbumStore((s) => s.markOnboarded);
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(24)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, { toValue: 1, duration: 500, useNativeDriver: USE_NATIVE_DRIVER }),
+      Animated.timing(translateY, { toValue: 0, duration: 500, useNativeDriver: USE_NATIVE_DRIVER }),
+    ]).start();
+  }, []);
+
+  return (
+    <ScrollView style={styles.screen} contentContainerStyle={styles.webContent}>
+      <Animated.View style={[styles.webInner, { opacity, transform: [{ translateY }] }]}>
+        <Image
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          source={require('../assets/AppLogo.png')}
+          style={styles.webLogo}
+          resizeMode="contain"
+        />
+        <Text style={styles.webTitle}>{t.onboarding.title}</Text>
+        <Text style={styles.webSubtitle}>{t.onboarding.subtitle}</Text>
+
+        <View style={styles.bullets}>
+          {t.onboarding.bullets.map((line) => (
+            <View key={line} style={styles.bullet}>
+              <Ionicons name="checkmark-circle" size={20} color={colors.success} />
+              <Text style={styles.bulletText}>{line}</Text>
+            </View>
+          ))}
+        </View>
+
+        <Pressable
+          onPress={onStart}
+          style={({ pressed }) => [styles.cta, pressed && { opacity: 0.85 }]}
+        >
+          <Text style={styles.ctaText}>{t.onboarding.cta}</Text>
+        </Pressable>
+      </Animated.View>
+    </ScrollView>
+  );
+}
+
+function NativeOnboarding({ onStart }: { onStart: () => void }) {
+  const t = useStrings();
   const { width } = useWindowDimensions();
 
   const anims = useRef(
-    Array.from({ length: COUNT }, () => ({
+    Array.from({ length: 10 }, () => ({
       opacity: new Animated.Value(0),
       translateY: new Animated.Value(28),
     })),
@@ -38,34 +82,26 @@ export default function Onboarding() {
       90,
       anims.map((a) =>
         Animated.parallel([
-          Animated.timing(a.opacity, { toValue: 1, duration: 420, useNativeDriver: true }),
-          Animated.timing(a.translateY, { toValue: 0, duration: 420, useNativeDriver: true }),
+          Animated.timing(a.opacity, { toValue: 1, duration: 420, useNativeDriver: USE_NATIVE_DRIVER }),
+          Animated.timing(a.translateY, { toValue: 0, duration: 420, useNativeDriver: USE_NATIVE_DRIVER }),
         ]),
       ),
     ).start();
 
     const pulse = Animated.loop(
       Animated.sequence([
-        Animated.timing(ctaScale, { toValue: 1.05, duration: 900, useNativeDriver: true }),
-        Animated.timing(ctaScale, { toValue: 1, duration: 900, useNativeDriver: true }),
+        Animated.timing(ctaScale, { toValue: 1.05, duration: 900, useNativeDriver: USE_NATIVE_DRIVER }),
+        Animated.timing(ctaScale, { toValue: 1, duration: 900, useNativeDriver: USE_NATIVE_DRIVER }),
       ]),
     );
     const timer = setTimeout(() => pulse.start(), 1200);
-    return () => {
-      clearTimeout(timer);
-      pulse.stop();
-    };
+    return () => { clearTimeout(timer); pulse.stop(); };
   }, []);
 
   const a = (idx: number) => ({
     opacity: anims[idx].opacity,
     transform: [{ translateY: anims[idx].translateY }],
   });
-
-  const handleStart = () => {
-    markOnboarded();
-    router.replace('/(tabs)');
-  };
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
@@ -77,7 +113,6 @@ export default function Onboarding() {
         style={{ flex: 1 }}
         contentContainerStyle={{ width: width * 3 }}
       >
-        {/* Slide 1 — Welcome */}
         <View style={[styles.slide, { width }]}>
           <Animated.View style={[styles.iconWrap, a(0)]}>
             <Ionicons name="football" size={64} color={colors.accent} />
@@ -88,12 +123,9 @@ export default function Onboarding() {
           <Animated.Text style={[styles.slideSubtitle, a(2)]}>
             {t.onboarding.subtitle}
           </Animated.Text>
-          <Animated.Text style={[styles.swipeHint, a(2)]}>
-            {'→'}
-          </Animated.Text>
+          <Animated.Text style={[styles.swipeHint, a(2)]}>{'→'}</Animated.Text>
         </View>
 
-        {/* Slide 2 — Features */}
         <View style={[styles.slide, { width }]}>
           <Animated.View style={[styles.iconWrap, a(3)]}>
             <Ionicons name="list-circle" size={64} color={colors.accent} />
@@ -106,19 +138,16 @@ export default function Onboarding() {
               </Animated.View>
             ))}
           </View>
-          <Animated.Text style={[styles.swipeHint, a(8)]}>
-            {'→'}
-          </Animated.Text>
+          <Animated.Text style={[styles.swipeHint, a(8)]}>{'→'}</Animated.Text>
         </View>
 
-        {/* Slide 3 — CTA */}
         <View style={[styles.slide, { width }]}>
           <Animated.View style={[styles.iconWrap, a(9)]}>
             <Ionicons name="trophy" size={64} color={colors.accent} />
           </Animated.View>
           <Animated.View style={{ transform: [{ scale: ctaScale }] }}>
             <Pressable
-              onPress={handleStart}
+              onPress={onStart}
               style={({ pressed }) => [styles.cta, pressed && { opacity: 0.85 }]}
             >
               <Text style={styles.ctaText}>{t.onboarding.cta}</Text>
@@ -127,53 +156,61 @@ export default function Onboarding() {
         </View>
       </ScrollView>
 
-      {/* Dot indicators */}
       <View style={styles.dots}>
-        {[0, 1, 2].map((i) => (
-          <View key={i} style={styles.dot} />
-        ))}
+        {[0, 1, 2].map((i) => <View key={i} style={styles.dot} />)}
       </View>
     </SafeAreaView>
   );
 }
 
+export default function Onboarding() {
+  const router = useRouter();
+  const markOnboarded = useAlbumStore((s) => s.markOnboarded);
+
+  const handleStart = () => {
+    markOnboarded();
+    router.replace('/(tabs)');
+  };
+
+  if (Platform.OS === 'web') {
+    return <WebOnboarding onStart={handleStart} />;
+  }
+  return <NativeOnboarding onStart={handleStart} />;
+}
+
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
-  slide: {
-    alignItems: 'center',
+
+  // Web layout
+  webContent: {
+    flexGrow: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     padding: spacing.xl,
+  },
+  webInner: {
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
     gap: spacing.lg,
   },
-  iconWrap: {
-    width: 96,
-    height: 96,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: colors.accent,
+  webLogo: {
+    width: 140,
+    height: 140,
   },
-  slideTitle: {
+  webTitle: {
     ...typography.h1,
     color: colors.textPrimary,
     textAlign: 'center',
   },
-  slideSubtitle: {
+  webSubtitle: {
     ...typography.body,
     color: colors.textSecondary,
     textAlign: 'center',
   },
-  swipeHint: {
-    ...typography.small,
-    color: colors.textMuted,
-    marginTop: spacing.md,
-  },
-  bullets: {
-    gap: spacing.md,
-    alignSelf: 'stretch',
-  },
+
+  // Shared
+  bullets: { gap: spacing.md, alignSelf: 'stretch' },
   bullet: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -184,11 +221,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  bulletText: {
-    ...typography.body,
-    color: colors.textPrimary,
-    flex: 1,
-  },
+  bulletText: { ...typography.body, color: colors.textPrimary, flex: 1 },
   cta: {
     backgroundColor: colors.accent,
     paddingVertical: spacing.md,
@@ -196,21 +229,25 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     minWidth: 200,
     alignItems: 'center',
+    marginTop: spacing.sm,
   },
-  ctaText: {
-    ...typography.h3,
-    color: colors.bg,
-  },
-  dots: {
-    flexDirection: 'row',
+  ctaText: { fontFamily: fonts.bold, fontSize: 17, color: colors.bg },
+
+  // Native slides
+  slide: { alignItems: 'center', justifyContent: 'center', padding: spacing.xl, gap: spacing.lg },
+  iconWrap: {
+    width: 96,
+    height: 96,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
-    paddingBottom: spacing.lg,
+    borderWidth: 2,
+    borderColor: colors.accent,
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.border,
-  },
+  slideTitle: { ...typography.h1, color: colors.textPrimary, textAlign: 'center' },
+  slideSubtitle: { ...typography.body, color: colors.textSecondary, textAlign: 'center' },
+  swipeHint: { ...typography.small, color: colors.textMuted, marginTop: spacing.md },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: spacing.sm, paddingBottom: spacing.lg },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.border },
 });

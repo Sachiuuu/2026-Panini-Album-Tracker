@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
+    justifyContent: 'center',
   },
   groupPill: {
     width: 52,

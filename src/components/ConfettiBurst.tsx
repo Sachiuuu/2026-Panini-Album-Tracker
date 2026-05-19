@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, Platform, StyleSheet, View } from 'react-native';
+
+const USE_NATIVE_DRIVER = Platform.OS !== 'web';
 
 const COLORS = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa', '#fb923c'];
 const COUNT = 18;
@@ -49,12 +51,12 @@ export function ConfettiBurst({ active }: Props) {
       p.opacity.setValue(1);
       p.rotate.setValue(0);
       Animated.parallel([
-        Animated.timing(p.x, { toValue: p.tx, duration: 700, useNativeDriver: true }),
-        Animated.timing(p.y, { toValue: p.ty, duration: 700, useNativeDriver: true }),
-        Animated.timing(p.rotate, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(p.x, { toValue: p.tx, duration: 700, useNativeDriver: USE_NATIVE_DRIVER }),
+        Animated.timing(p.y, { toValue: p.ty, duration: 700, useNativeDriver: USE_NATIVE_DRIVER }),
+        Animated.timing(p.rotate, { toValue: 1, duration: 700, useNativeDriver: USE_NATIVE_DRIVER }),
         Animated.sequence([
           Animated.delay(300),
-          Animated.timing(p.opacity, { toValue: 0, duration: 400, useNativeDriver: true }),
+          Animated.timing(p.opacity, { toValue: 0, duration: 400, useNativeDriver: USE_NATIVE_DRIVER }),
         ]),
       ]).start();
     });

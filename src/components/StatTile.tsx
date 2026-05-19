@@ -9,11 +9,12 @@ interface Props {
   hint?: string;
   icon?: keyof typeof Ionicons.glyphMap;
   tint?: string;
+  bgColor?: string;
 }
 
-export function StatTile({ label, value, hint, icon, tint = colors.accent }: Props) {
+export function StatTile({ label, value, hint, icon, tint = colors.accent, bgColor }: Props) {
   return (
-    <View style={styles.tile}>
+    <View style={[styles.tile, bgColor ? { backgroundColor: bgColor, borderColor: tint + '55' } : null]}>
       <View style={styles.header}>
         {icon ? <Ionicons name={icon} size={16} color={tint} /> : null}
         <Text style={styles.label}>{label}</Text>

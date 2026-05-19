@@ -49,6 +49,25 @@ export default function SectionScreen() {
     [isGroup, groupLetter],
   );
 
+  function getHeaderTheme() {
+    if (!section) return { bg: colors.surface, text: colors.textPrimary, muted: colors.textMuted };
+    if (section.kind === 'group') {
+      return {
+        bg: GROUP_COLORS[groupLetter] ?? colors.surface,
+        text: '#ffffff',
+        muted: 'rgba(255,255,255,0.7)',
+      };
+    }
+    if (section.kind === 'cocacola') {
+      return { bg: '#F40000', text: '#ffffff', muted: 'rgba(255,255,255,0.7)' };
+    }
+    if (section.kind === 'specials') {
+      return { bg: '#F0F1F6', text: '#111111', muted: '#666666' };
+    }
+    return { bg: colors.surface, text: colors.textPrimary, muted: colors.textMuted };
+  }
+  const headerTheme = getHeaderTheme();
+
   const filteredStickers = useMemo(
     () => (section ? applyFilter(section.stickers, filter, owned) : []),
     [section, filter, owned],
@@ -66,33 +85,30 @@ export default function SectionScreen() {
   }
 
   const title = getSectionTitle(section, t);
-  const groupColor = isGroup ? (GROUP_COLORS[groupLetter] ?? colors.surface) : colors.surface;
-  const headerTextColor = isGroup ? '#ffffff' : colors.textPrimary;
-  const headerMutedColor = isGroup ? 'rgba(255,255,255,0.7)' : colors.textMuted;
 
   return (
     <View style={styles.screen}>
       <View
         style={[
           styles.header,
-          { backgroundColor: groupColor, paddingTop: insets.top + spacing.sm },
+          { backgroundColor: headerTheme.bg, paddingTop: insets.top + spacing.sm },
         ]}
       >
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
-          <Ionicons name="chevron-back" size={28} color={headerTextColor} />
+          <Ionicons name="chevron-back" size={28} color={headerTheme.text} />
         </Pressable>
         <View style={styles.headerRow}>
-          <Text style={[styles.title, { color: headerTextColor }]}>{title}</Text>
-          <Text style={[styles.percent, { color: headerTextColor }]}>
+          <Text style={[styles.title, { color: headerTheme.text }]}>{title}</Text>
+          <Text style={[styles.percent, { color: headerTheme.text }]}>
             {formatPercent(progress.pct)}
           </Text>
         </View>
         <ProgressBar
           value={progress.pct}
-          tint="rgba(255,255,255,0.9)"
-          trackColor="rgba(0,0,0,0.2)"
+          tint={headerTheme.text === '#ffffff' ? 'rgba(255,255,255,0.9)' : undefined}
+          trackColor={headerTheme.text === '#ffffff' ? 'rgba(0,0,0,0.2)' : undefined}
         />
-        <Text style={[styles.fraction, { color: headerMutedColor }]}>
+        <Text style={[styles.fraction, { color: headerTheme.muted }]}>
           {formatFraction(progress.owned, progress.total)}
         </Text>
       </View>

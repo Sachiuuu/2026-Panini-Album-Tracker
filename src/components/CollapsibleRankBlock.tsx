@@ -4,11 +4,14 @@ import { useRef, useState } from 'react';
 import {
   Animated,
   LayoutAnimation,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+
+const USE_NATIVE_DRIVER = Platform.OS !== 'web';
 import { TeamStanding } from '../store/selectors';
 import { colors } from '../theme/colors';
 import { radius, spacing, typography } from '../theme/typography';
@@ -32,13 +35,13 @@ export function CollapsibleRankBlock({
   const rotation = useRef(new Animated.Value(defaultExpanded ? 1 : 0)).current;
 
   const toggle = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    if (Platform.OS !== 'web') LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const next = !expanded;
     setExpanded(next);
     Animated.timing(rotation, {
       toValue: next ? 1 : 0,
       duration: 220,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   };
 

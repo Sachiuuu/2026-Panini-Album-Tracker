@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { memo, useRef } from 'react';
-import { Animated, Pressable, StyleSheet, Text } from 'react-native';
+import { Animated, Platform, Pressable, StyleSheet, Text } from 'react-native';
+
+const USE_NATIVE_DRIVER = Platform.OS !== 'web';
 import { Sticker } from '../data/schema';
 import { useStickerOwned } from '../store/selectors';
 import { useAlbumStore } from '../store/useAlbumStore';
@@ -29,17 +31,17 @@ function StickerTileBase({ sticker, size = 80 }: Props) {
       scale.setValue(0.82);
       Animated.spring(scale, {
         toValue: 1,
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
         speed: 16,
         bounciness: 16,
       }).start();
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     } else {
       Animated.sequence([
-        Animated.timing(scale, { toValue: 0.93, duration: 60, useNativeDriver: true }),
-        Animated.timing(scale, { toValue: 1, duration: 100, useNativeDriver: true }),
+        Animated.timing(scale, { toValue: 0.93, duration: 60, useNativeDriver: USE_NATIVE_DRIVER }),
+        Animated.timing(scale, { toValue: 1, duration: 100, useNativeDriver: USE_NATIVE_DRIVER }),
       ]).start();
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
 

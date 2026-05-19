@@ -8,6 +8,7 @@ interface LocaleState {
   locale: Locale;
   _hasHydrated: boolean;
   setLocale: (locale: Locale) => void;
+  setHydrated: (v: boolean) => void;
 }
 
 export const useLocaleStore = create<LocaleState>()(
@@ -16,13 +17,14 @@ export const useLocaleStore = create<LocaleState>()(
       locale: 'es',
       _hasHydrated: false,
       setLocale: (locale) => set({ locale }),
+      setHydrated: (v) => set({ _hasHydrated: v }),
     }),
     {
       name: 'panini-2026-locale',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({ locale: state.locale }),
       onRehydrateStorage: () => (state) => {
-        if (state) state._hasHydrated = true;
+        state?.setHydrated(true);
       },
     },
   ),
