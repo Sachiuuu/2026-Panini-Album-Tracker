@@ -1,4 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getCountryStyle } from '../data/countryColors';
 import { Team } from '../data/schema';
 import { useStrings } from '../i18n/useStrings';
@@ -17,10 +20,25 @@ interface Props {
 
 export function TeamHeader({ team, owned, total, pct }: Props) {
   const t = useStrings();
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const style = getCountryStyle(team.countryCode);
   const name = t.teamNames[team.code] ?? team.name;
+
   return (
-    <View style={[styles.container, { backgroundColor: style.primary }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: style.primary,
+          paddingTop: insets.top + spacing.sm,
+        },
+      ]}
+    >
+      <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+        <Ionicons name="chevron-back" size={28} color={style.text} />
+      </Pressable>
+
       <View style={styles.topRow}>
         <Flag code={team.countryCode} height={44} />
         <View style={styles.titleBlock}>
@@ -55,8 +73,16 @@ export function TeamHeader({ team, owned, total, pct }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xl,
     gap: spacing.md,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  backBtn: {
+    alignSelf: 'flex-start',
+    padding: 4,
+    marginBottom: spacing.xs,
   },
   topRow: {
     flexDirection: 'row',

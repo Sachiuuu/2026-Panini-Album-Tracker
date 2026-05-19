@@ -1,6 +1,7 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { ConfettiBurst } from '../../src/components/ConfettiBurst';
 import { EmptyState } from '../../src/components/EmptyState';
 import { FilterMode, FilterSegmented } from '../../src/components/FilterSegmented';
 import { StickerGrid } from '../../src/components/StickerGrid';
@@ -31,6 +32,7 @@ export default function TeamScreen() {
   const stickers = useMemo(() => getTeamStickers(teamCode), [teamCode]);
   const owned = useAlbumStore((s) => s.owned);
   const [filter, setFilter] = useState<FilterMode>('all');
+  const [confetti, setConfetti] = useState(false);
 
   const filtered = useMemo(
     () => applyFilter(stickers, filter, owned),
@@ -42,10 +44,23 @@ export default function TeamScreen() {
     [stickers, owned],
   );
 
+  const prevCountRef = useRef<number | null>(null);
+  useEffect(() => {
+    const prev = prevCountRef.current;
+    prevCountRef.current = ownedCount;
+    if (
+      stickers.length > 0 &&
+      ownedCount === stickers.length &&
+      prev !== null &&
+      prev < stickers.length
+    ) {
+      setConfetti(true);
+    }
+  }, [ownedCount, stickers.length]);
+
   if (!team) {
     return (
       <View style={styles.notFound}>
-        <Stack.Screen options={{ title: t.empty.noResults }} />
         <EmptyState text={t.empty.noResults} icon="alert-circle" />
       </View>
     );
@@ -53,7 +68,6 @@ export default function TeamScreen() {
 
   return (
     <View style={styles.screen}>
-      <Stack.Screen options={{ title: team.name }} />
       <TeamHeader
         team={team}
         owned={ownedCount}
@@ -87,6 +101,7 @@ export default function TeamScreen() {
           />
         }
       />
+      <ConfettiBurst active={confetti} />
     </View>
   );
 }

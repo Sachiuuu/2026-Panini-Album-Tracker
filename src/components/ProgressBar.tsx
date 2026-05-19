@@ -1,20 +1,22 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
-import { colors } from '../theme/colors';
 import { radius } from '../theme/typography';
 
 interface Props {
   value: number;
   height?: number;
   tint?: string;
+  tintEnd?: string;
   trackColor?: string;
 }
 
 export function ProgressBar({
   value,
   height = 10,
-  tint = colors.accent,
-  trackColor = colors.surfaceAlt,
+  tint = '#fbbf24',
+  tintEnd,
+  trackColor = '#1f2937',
 }: Props) {
   const clamped = Math.max(0, Math.min(1, value));
   const anim = useRef(new Animated.Value(clamped)).current;
@@ -27,10 +29,12 @@ export function ProgressBar({
     }).start();
   }, [anim, clamped]);
 
-  const width = anim.interpolate({
+  const widthPct = anim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0%', '100%'],
   });
+
+  const endColor = tintEnd ?? lighten(tint);
 
   return (
     <View
@@ -39,19 +43,25 @@ export function ProgressBar({
         { height, backgroundColor: trackColor, borderRadius: radius.pill },
       ]}
     >
-      <Animated.View
-        style={[
-          styles.fill,
-          {
-            height,
-            width,
-            backgroundColor: tint,
-            borderRadius: radius.pill,
-          },
-        ]}
-      />
+      <Animated.View style={{ width: widthPct, height, borderRadius: radius.pill, overflow: 'hidden' }}>
+        <LinearGradient
+          colors={[tint, endColor]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
     </View>
   );
+}
+
+function lighten(hex: string): string {
+  // Adds ~30% brightness to a hex color for the gradient end
+  const n = parseInt(hex.replace('#', ''), 16);
+  const r = Math.min(255, ((n >> 16) & 0xff) + 48);
+  const g = Math.min(255, ((n >> 8) & 0xff) + 48);
+  const b = Math.min(255, (n & 0xff) + 48);
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
 const styles = StyleSheet.create({
@@ -59,5 +69,4 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
   },
-  fill: {},
 });

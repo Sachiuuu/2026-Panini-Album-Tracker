@@ -24,6 +24,15 @@ export const fr: Strings = {
   home: {
     title: 'WC 2026 Sticker Tracker',
     sectionsHeader: 'Sections',
+    motivationLines: [
+      'Ton album est vide. Commence à coller !',
+      'Bon début ! Continue comme ça.',
+      'Déjà plus de 10 %. Continue !',
+      "Presque à la moitié. N'arrête pas !",
+      'Tu as passé la moitié. Presque !',
+      'Si proche ! Il t\'en reste très peu.',
+      'Album complet ! Tu es un champion !',
+    ],
     stats: {
       collected: 'Obtenus',
       missing: 'Manquants',
@@ -52,6 +61,7 @@ export const fr: Strings = {
     placeholder: 'Rechercher un pays ou un code (ex. MEX5)',
     noResults: 'Aucun résultat',
     typeToSearch: 'Tapez un nom de pays ou un code de sticker.',
+    browseGroups: 'Parcourir par groupe',
     teamsHeader: 'Équipes',
     stickersHeader: 'Stickers',
   },

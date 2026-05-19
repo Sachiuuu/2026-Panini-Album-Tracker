@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { EmptyState } from '../../src/components/EmptyState';
 import { Flag } from '../../src/components/Flag';
 import { SearchBar } from '../../src/components/SearchBar';
@@ -25,6 +25,8 @@ function normalize(text: string): string {
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '');
 }
+
+const GROUP_SECTIONS = ALBUM.sections.filter((s) => s.kind === 'group');
 
 export default function Search() {
   const t = useStrings();
@@ -78,6 +80,7 @@ export default function Search() {
   }, [debouncedQuery, t]);
 
   const isEmpty = debouncedQuery.trim().length > 0 && rows.length === 0;
+  const isIdle = debouncedQuery.trim().length === 0;
 
   return (
     <View style={styles.screen}>
@@ -89,10 +92,25 @@ export default function Search() {
         />
       </View>
 
-      {debouncedQuery.trim().length === 0 ? (
-        <View style={styles.intro}>
-          <EmptyState text={t.search.typeToSearch} icon="search" />
-        </View>
+      {isIdle ? (
+        <ScrollView contentContainerStyle={styles.idleContent}>
+          <Text style={styles.browseLabel}>{t.search.browseGroups}</Text>
+          <View style={styles.groupGrid}>
+            {GROUP_SECTIONS.map((section) => {
+              const letter = section.id.replace('group-', '');
+              return (
+                <Pressable
+                  key={section.id}
+                  onPress={() => router.push(`/section/${section.id}`)}
+                  style={({ pressed }) => [styles.groupPill, pressed && { opacity: 0.75 }]}
+                >
+                  <Text style={styles.groupPillText}>{letter}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          <Text style={styles.idleHint}>{t.search.typeToSearch}</Text>
+        </ScrollView>
       ) : isEmpty ? (
         <EmptyState text={t.search.noResults} icon="sad" />
       ) : (
@@ -182,7 +200,43 @@ export default function Search() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   searchWrap: { padding: spacing.lg, paddingBottom: spacing.sm },
-  intro: { flex: 1, justifyContent: 'center' },
+
+  idleContent: {
+    padding: spacing.lg,
+    gap: spacing.lg,
+    paddingBottom: spacing.xxl,
+  },
+  browseLabel: {
+    ...typography.smallBold,
+    color: colors.textMuted,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  groupGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  groupPill: {
+    width: 52,
+    height: 52,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  groupPillText: {
+    ...typography.h2,
+    color: colors.accent,
+  },
+  idleHint: {
+    ...typography.small,
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
+
   list: { padding: spacing.lg, gap: spacing.sm, paddingBottom: spacing.xxl },
   sectionHeader: {
     ...typography.smallBold,

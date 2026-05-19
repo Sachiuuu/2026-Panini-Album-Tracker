@@ -1,14 +1,22 @@
 import { TextStyle } from 'react-native';
 
+export const fonts = {
+  display: 'BebasNeue',
+  regular: 'Inter',
+  semiBold: 'Inter-SemiBold',
+  bold: 'Inter-Bold',
+  extraBold: 'Inter-ExtraBold',
+} as const;
+
 export const typography = {
-  h1: { fontSize: 28, fontWeight: '800' } satisfies TextStyle,
-  h2: { fontSize: 22, fontWeight: '700' } satisfies TextStyle,
-  h3: { fontSize: 18, fontWeight: '700' } satisfies TextStyle,
-  body: { fontSize: 15, fontWeight: '400' } satisfies TextStyle,
-  bodyBold: { fontSize: 15, fontWeight: '600' } satisfies TextStyle,
-  small: { fontSize: 13, fontWeight: '400' } satisfies TextStyle,
-  smallBold: { fontSize: 13, fontWeight: '600' } satisfies TextStyle,
-  mono: { fontSize: 14, fontWeight: '600', fontFamily: 'Courier' } satisfies TextStyle,
+  h1: { fontFamily: fonts.extraBold, fontSize: 28 } satisfies TextStyle,
+  h2: { fontFamily: fonts.bold, fontSize: 22 } satisfies TextStyle,
+  h3: { fontFamily: fonts.bold, fontSize: 18 } satisfies TextStyle,
+  body: { fontFamily: fonts.regular, fontSize: 15 } satisfies TextStyle,
+  bodyBold: { fontFamily: fonts.semiBold, fontSize: 15 } satisfies TextStyle,
+  small: { fontFamily: fonts.regular, fontSize: 13 } satisfies TextStyle,
+  smallBold: { fontFamily: fonts.semiBold, fontSize: 13 } satisfies TextStyle,
+  mono: { fontFamily: 'Courier', fontSize: 14, fontWeight: '600' } satisfies TextStyle,
 } as const;
 
 export const spacing = {

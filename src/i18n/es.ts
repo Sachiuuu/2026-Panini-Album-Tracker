@@ -10,6 +10,7 @@ export interface Strings {
   home: {
     title: string;
     sectionsHeader: string;
+    motivationLines: string[];
     stats: {
       collected: string;
       missing: string;
@@ -31,6 +32,7 @@ export interface Strings {
     placeholder: string;
     noResults: string;
     typeToSearch: string;
+    browseGroups: string;
     teamsHeader: string;
     stickersHeader: string;
   };
@@ -101,6 +103,15 @@ export const es: Strings = {
   home: {
     title: 'WC 2026 Sticker Tracker',
     sectionsHeader: 'Secciones',
+    motivationLines: [
+      'Tu álbum está vacío. ¡Empieza a pegar!',
+      '¡Buen comienzo! Sigue así.',
+      'Ya llevas más del 10 %. ¡Sigue!',
+      'Casi a la mitad. ¡No pares!',
+      'Ya pasaste el ecuador. ¡Casi!',
+      '¡Qué cerca! Te faltan muy pocas.',
+      '¡Álbum completo! ¡Eres un campeón!',
+    ],
     stats: {
       collected: 'Obtenidas',
       missing: 'Faltan',
@@ -129,6 +140,7 @@ export const es: Strings = {
     placeholder: 'Buscar país o código (ej. MEX5)',
     noResults: 'Sin resultados',
     typeToSearch: 'Escribe el nombre del país o el código de una lámina.',
+    browseGroups: 'Explorar por grupo',
     teamsHeader: 'Equipos',
     stickersHeader: 'Láminas',
   },

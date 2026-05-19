@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import { memo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { memo, useRef } from 'react';
+import { Animated, Pressable, StyleSheet, Text } from 'react-native';
 import { Sticker } from '../data/schema';
 import { useStickerOwned } from '../store/selectors';
 import { useAlbumStore } from '../store/useAlbumStore';
 import { colors } from '../theme/colors';
-import { radius, typography } from '../theme/typography';
+import { fonts, radius } from '../theme/typography';
 
 interface Props {
   sticker: Sticker;
@@ -15,42 +16,69 @@ interface Props {
   onScan?: () => void;
 }
 
-function StickerTileBase({ sticker, size = 72 }: Props) {
+function StickerTileBase({ sticker, size = 80 }: Props) {
   const owned = useStickerOwned(sticker.id);
   const toggle = useAlbumStore((s) => s.toggleOwned);
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    const willBeOwned = !owned;
+    toggle(sticker.id);
+
+    if (willBeOwned) {
+      scale.setValue(0.82);
+      Animated.spring(scale, {
+        toValue: 1,
+        useNativeDriver: true,
+        speed: 16,
+        bounciness: 16,
+      }).start();
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    } else {
+      Animated.sequence([
+        Animated.timing(scale, { toValue: 0.93, duration: 60, useNativeDriver: true }),
+        Animated.timing(scale, { toValue: 1, duration: 100, useNativeDriver: true }),
+      ]).start();
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
+  const checkSize = Math.round(size * 0.44);
 
   return (
     <Pressable
-      onPress={() => toggle(sticker.id)}
-      style={({ pressed }) => [
-        styles.tile,
-        {
-          width: size,
-          height: size,
-          backgroundColor: owned ? colors.success : colors.surface,
-          borderColor: owned ? colors.success : colors.border,
-          opacity: pressed ? 0.85 : 1,
-        },
-      ]}
-      hitSlop={6}
+      onPress={handlePress}
+      hitSlop={4}
       accessibilityRole="checkbox"
       accessibilityState={{ checked: owned }}
       accessibilityLabel={sticker.label ?? sticker.code}
     >
-      <Text
+      <Animated.View
         style={[
-          styles.code,
-          { color: owned ? colors.bg : colors.textPrimary },
+          styles.tile,
+          {
+            width: size,
+            height: size,
+            backgroundColor: owned ? colors.success : colors.surface,
+            borderColor: owned ? colors.successDark : colors.border,
+            borderStyle: owned ? 'solid' : 'dashed',
+            transform: [{ scale }],
+          },
         ]}
-        numberOfLines={1}
       >
-        {sticker.code}
-      </Text>
-      {owned ? (
-        <View style={styles.check}>
-          <Ionicons name="checkmark" size={14} color={colors.bg} />
-        </View>
-      ) : null}
+        {owned ? (
+          <>
+            <Ionicons name="checkmark" size={checkSize} color={colors.bg} />
+            <Text style={[styles.codeOwned, { fontSize: Math.max(9, size * 0.145) }]}>
+              {sticker.code}
+            </Text>
+          </>
+        ) : (
+          <Text style={[styles.code, { fontSize: Math.max(10, size * 0.165) }]}>
+            {sticker.code}
+          </Text>
+        )}
+      </Animated.View>
     </Pressable>
   );
 }
@@ -64,15 +92,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 4,
+    gap: 2,
   },
   code: {
-    ...typography.bodyBold,
-    fontSize: 14,
-    letterSpacing: 0.3,
+    fontFamily: fonts.semiBold,
+    color: colors.textMuted,
+    letterSpacing: 0.2,
+    textAlign: 'center',
   },
-  check: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
+  codeOwned: {
+    fontFamily: fonts.semiBold,
+    color: colors.bg,
+    opacity: 0.75,
+    letterSpacing: 0.2,
+    textAlign: 'center',
   },
 });
