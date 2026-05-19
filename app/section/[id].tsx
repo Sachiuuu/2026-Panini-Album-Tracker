@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  title: { ...typography.h2, color: colors.textPrimary },
-  percent: { ...typography.h3, color: colors.accent },
+  title: { ...typography.h2, color: colors.textPrimary, flexShrink: 1 },
+  percent: { ...typography.h3, color: colors.accent, flexShrink: 0, marginLeft: spacing.sm },
   fraction: { ...typography.small, color: colors.textMuted },
   filterRow: {
     paddingHorizontal: spacing.lg,

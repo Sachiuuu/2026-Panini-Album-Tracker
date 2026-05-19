@@ -80,6 +80,8 @@ const styles = StyleSheet.create({
   percent: {
     ...typography.smallBold,
     color: colors.accent,
+    flexShrink: 0,
+    marginLeft: spacing.sm,
   },
   fraction: {
     ...typography.small,

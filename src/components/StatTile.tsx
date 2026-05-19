@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
   },
   value: {
     fontFamily: fonts.display,
-    fontSize: 36,
-    lineHeight: 40,
+    fontSize: 28,
+    lineHeight: 32,
   },
   hint: {
     ...typography.small,

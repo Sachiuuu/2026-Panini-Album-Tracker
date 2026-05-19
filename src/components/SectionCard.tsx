@@ -95,10 +95,13 @@ const styles = StyleSheet.create({
   title: {
     ...typography.bodyBold,
     color: colors.textPrimary,
+    flexShrink: 1,
   },
   percent: {
     ...typography.smallBold,
     color: colors.accent,
+    flexShrink: 0,
+    marginLeft: spacing.sm,
   },
   subtitle: {
     ...typography.small,

@@ -102,9 +102,9 @@ const styles = StyleSheet.create({
   },
   heroPercent: {
     fontFamily: fonts.display,
-    fontSize: 64,
+    fontSize: 52,
     color: colors.accent,
-    lineHeight: 68,
+    lineHeight: 56,
   },
   heroRight: {
     alignItems: 'flex-end',

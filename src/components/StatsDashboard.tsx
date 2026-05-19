@@ -43,15 +43,15 @@ export function StatsDashboard() {
       <View style={styles.tilesRow}>
         <StatTile
           label={t.home.stats.emblems.toUpperCase()}
-          value={formatFraction(emblems.owned, emblems.total)}
-          hint={formatPercent(pctOf(emblems.owned, emblems.total))}
+          value={formatPercent(pctOf(emblems.owned, emblems.total))}
+          hint={formatFraction(emblems.owned, emblems.total)}
           icon="shield"
           tint={colors.accent}
         />
         <StatTile
           label={t.home.stats.lineups.toUpperCase()}
-          value={formatFraction(lineups.owned, lineups.total)}
-          hint={formatPercent(pctOf(lineups.owned, lineups.total))}
+          value={formatPercent(pctOf(lineups.owned, lineups.total))}
+          hint={formatFraction(lineups.owned, lineups.total)}
           icon="people-circle"
           tint={colors.accent}
         />
