@@ -9,25 +9,11 @@ import { useStrings } from '../i18n/useStrings';
 import { useAlbumStore } from '../store/useAlbumStore';
 import { useSectionProgress } from '../store/selectors';
 import { colors } from '../theme/colors';
+import { GROUP_COLORS } from '../data/groupColors';
 import { fonts, radius, spacing, typography } from '../theme/typography';
 import { formatFraction, formatPercent, pct as pctOf } from '../utils/format';
 import { Flag } from './Flag';
 import { ProgressBar } from './ProgressBar';
-
-const GROUP_COLORS: Record<string, string> = {
-  A: '#5AB040',
-  B: '#CD3035',
-  C: '#C4D43E',
-  D: '#2E7DC8',
-  E: '#F08028',
-  F: '#DC4E4E',
-  G: '#9178BC',
-  H: '#2EAA9C',
-  I: '#E07898',
-  J: '#1E8870',
-  K: '#CF3C7A',
-  L: '#8C2038',
-};
 
 interface Props {
   section: Section;

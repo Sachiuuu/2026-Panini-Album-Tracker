@@ -6,12 +6,13 @@ import { EmptyState } from '../../src/components/EmptyState';
 import { Flag } from '../../src/components/Flag';
 import { SearchBar } from '../../src/components/SearchBar';
 import { ALBUM } from '../../src/data/album';
+import { GROUP_COLORS } from '../../src/data/groupColors';
 import { Sticker, Team } from '../../src/data/schema';
 import { TEAMS } from '../../src/data/teams';
 import { useStrings } from '../../src/i18n/useStrings';
 import { useAlbumStore } from '../../src/store/useAlbumStore';
 import { colors } from '../../src/theme/colors';
-import { radius, spacing, typography } from '../../src/theme/typography';
+import { fonts, radius, spacing, typography } from '../../src/theme/typography';
 import { useDebounced } from '../../src/utils/debounce';
 
 type Row =
@@ -98,11 +99,16 @@ export default function Search() {
           <View style={styles.groupGrid}>
             {GROUP_SECTIONS.map((section) => {
               const letter = section.id.replace('group-', '');
+              const bg = GROUP_COLORS[letter] ?? colors.surfaceAlt;
               return (
                 <Pressable
                   key={section.id}
                   onPress={() => router.push(`/section/${section.id}`)}
-                  style={({ pressed }) => [styles.groupPill, pressed && { opacity: 0.75 }]}
+                  style={({ pressed }) => [
+                    styles.groupPill,
+                    { backgroundColor: bg },
+                    pressed && { opacity: 0.75 },
+                  ]}
                 >
                   <Text style={styles.groupPillText}>{letter}</Text>
                 </Pressable>
@@ -221,15 +227,15 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: radius.md,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
   groupPillText: {
-    ...typography.h2,
-    color: colors.accent,
+    fontFamily: fonts.display,
+    fontSize: 24,
+    color: '#ffffff',
+    lineHeight: 28,
+    textAlign: 'center',
   },
   idleHint: {
     ...typography.small,

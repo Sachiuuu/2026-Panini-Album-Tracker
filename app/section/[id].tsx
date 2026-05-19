@@ -7,6 +7,7 @@ import { ProgressBar } from '../../src/components/ProgressBar';
 import { StickerGrid } from '../../src/components/StickerGrid';
 import { TeamCard } from '../../src/components/TeamCard';
 import { ALBUM, getSection } from '../../src/data/album';
+import { GROUP_COLORS } from '../../src/data/groupColors';
 import { Sticker, Team } from '../../src/data/schema';
 import { TEAMS_BY_GROUP } from '../../src/data/teams';
 import { getSectionTitle } from '../../src/i18n/getSectionTitle';
@@ -60,18 +61,21 @@ export default function SectionScreen() {
   }
 
   const title = getSectionTitle(section, t);
+  const groupColor = isGroup ? (GROUP_COLORS[groupLetter] ?? colors.surface) : colors.surface;
+  const headerTextColor = isGroup ? '#ffffff' : colors.textPrimary;
+  const headerMutedColor = isGroup ? 'rgba(255,255,255,0.7)' : colors.textMuted;
 
   return (
     <View style={styles.screen}>
       <Stack.Screen options={{ title }} />
 
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: groupColor, borderBottomColor: groupColor }]}>
         <View style={styles.headerRow}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.percent}>{formatPercent(progress.pct)}</Text>
+          <Text style={[styles.title, { color: headerTextColor }]}>{title}</Text>
+          <Text style={[styles.percent, { color: headerTextColor }]}>{formatPercent(progress.pct)}</Text>
         </View>
-        <ProgressBar value={progress.pct} />
-        <Text style={styles.fraction}>
+        <ProgressBar value={progress.pct} tint="rgba(255,255,255,0.9)" trackColor="rgba(0,0,0,0.2)" />
+        <Text style={[styles.fraction, { color: headerMutedColor }]}>
           {formatFraction(progress.owned, progress.total)}
         </Text>
       </View>
