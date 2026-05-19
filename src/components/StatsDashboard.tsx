@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { es } from '../i18n/es';
+import { useStrings } from '../i18n/useStrings';
 import {
   ProgressInfo,
   useBottomTeams,
@@ -14,6 +14,7 @@ import { CollapsibleRankBlock } from './CollapsibleRankBlock';
 import { StatTile } from './StatTile';
 
 export function StatsDashboard() {
+  const t = useStrings();
   const global: ProgressInfo = useGlobalProgress();
   const emblems = useCountByKind('emblem');
   const lineups = useCountByKind('lineup');
@@ -24,16 +25,16 @@ export function StatsDashboard() {
     <View style={styles.container}>
       <View style={styles.tilesRow}>
         <StatTile
-          label={es.home.stats.collected.toUpperCase()}
+          label={t.home.stats.collected.toUpperCase()}
           value={String(global.owned)}
-          hint={`${es.home.stats.of} ${global.total}`}
+          hint={`${t.home.stats.of} ${global.total}`}
           icon="checkmark-circle"
           tint={colors.success}
         />
         <StatTile
-          label={es.home.stats.missing.toUpperCase()}
+          label={t.home.stats.missing.toUpperCase()}
           value={String(global.missing)}
-          hint={`${es.home.stats.of} ${global.total}`}
+          hint={`${t.home.stats.of} ${global.total}`}
           icon="ellipse-outline"
           tint={colors.danger}
         />
@@ -41,13 +42,13 @@ export function StatsDashboard() {
 
       <View style={styles.tilesRow}>
         <StatTile
-          label={es.home.stats.emblems.toUpperCase()}
+          label={t.home.stats.emblems.toUpperCase()}
           value={formatFraction(emblems.owned, emblems.total)}
           icon="shield"
           tint={colors.accent}
         />
         <StatTile
-          label={es.home.stats.lineups.toUpperCase()}
+          label={t.home.stats.lineups.toUpperCase()}
           value={formatFraction(lineups.owned, lineups.total)}
           icon="people-circle"
           tint={colors.accent}
@@ -55,12 +56,12 @@ export function StatsDashboard() {
       </View>
 
       <CollapsibleRankBlock
-        title={es.home.stats.top5}
+        title={t.home.stats.top5}
         rows={top}
         tint={colors.success}
       />
       <CollapsibleRankBlock
-        title={es.home.stats.bottom5}
+        title={t.home.stats.bottom5}
         rows={bottom}
         tint={colors.danger}
       />

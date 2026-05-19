@@ -5,39 +5,40 @@ import { ProgressBar } from '../../src/components/ProgressBar';
 import { SectionCard } from '../../src/components/SectionCard';
 import { StatsDashboard } from '../../src/components/StatsDashboard';
 import { ALBUM } from '../../src/data/album';
-import { es } from '../../src/i18n/es';
+import { useStrings } from '../../src/i18n/useStrings';
 import { useGlobalProgress } from '../../src/store/selectors';
 import { colors } from '../../src/theme/colors';
 import { radius, spacing, typography } from '../../src/theme/typography';
 import { formatFraction, formatPercent } from '../../src/utils/format';
 
 export default function AlbumHome() {
+  const t = useStrings();
   const router = useRouter();
   const progress = useGlobalProgress();
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>{es.home.title}</Text>
+      <Text style={styles.title}>{t.home.title}</Text>
 
       <View style={styles.hero}>
         <View style={styles.heroHeader}>
-          <Text style={styles.heroLabel}>{es.common.complete.toUpperCase()}</Text>
+          <Text style={styles.heroLabel}>{t.common.complete.toUpperCase()}</Text>
           <Text style={styles.heroPercent}>{formatPercent(progress.pct)}</Text>
         </View>
         <ProgressBar value={progress.pct} height={14} />
         <View style={styles.heroFooter}>
           <Text style={styles.heroFraction}>
-            {formatFraction(progress.owned, progress.total)} {es.home.stats.collected.toLowerCase()}
+            {formatFraction(progress.owned, progress.total)} {t.home.stats.collected.toLowerCase()}
           </Text>
           <Text style={styles.heroFraction}>
-            {progress.missing} {es.home.stats.missing.toLowerCase()}
+            {progress.missing} {t.home.stats.missing.toLowerCase()}
           </Text>
         </View>
       </View>
 
       <StatsDashboard />
 
-      <Text style={styles.sectionHeader}>{es.home.sectionsHeader}</Text>
+      <Text style={styles.sectionHeader}>{t.home.sectionsHeader}</Text>
 
       <View style={styles.list}>
         {ALBUM.sections.map((section) =>

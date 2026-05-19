@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Section } from '../data/schema';
+import { getSectionTitle } from '../i18n/getSectionTitle';
+import { useStrings } from '../i18n/useStrings';
 import { useSectionProgress } from '../store/selectors';
 import { colors } from '../theme/colors';
 import { radius, spacing, typography } from '../theme/typography';
@@ -21,9 +23,11 @@ function iconForSection(kind: Section['kind']): keyof typeof Ionicons.glyphMap {
 }
 
 export function SectionCard({ section, onPress }: Props) {
+  const t = useStrings();
   const progress = useSectionProgress(section.id);
   const icon = iconForSection(section.kind);
   const complete = progress.total > 0 && progress.owned === progress.total;
+  const title = getSectionTitle(section, t);
 
   return (
     <Pressable
@@ -43,7 +47,7 @@ export function SectionCard({ section, onPress }: Props) {
         </View>
         <View style={styles.body}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>{section.title}</Text>
+            <Text style={styles.title}>{title}</Text>
             <Text style={styles.percent}>{formatPercent(progress.pct)}</Text>
           </View>
           <ProgressBar value={progress.pct} />

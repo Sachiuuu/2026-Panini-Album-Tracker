@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { es } from '../../src/i18n/es';
+import { useStrings } from '../../src/i18n/useStrings';
 import { colors } from '../../src/theme/colors';
 
 // PHASE_2: añadir aquí una cuarta tab "Escanear" o un FAB que abra app/scan.tsx.
 // Ver src/scan/README.md para detalles del flujo.
 export default function TabsLayout() {
+  const t = useStrings();
   return (
     <Tabs
       screenOptions={{
@@ -20,21 +21,21 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: es.tabs.album,
+          title: t.tabs.album,
           tabBarIcon: ({ color, size }) => <Ionicons name="albums" color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: es.tabs.search,
+          title: t.tabs.search,
           tabBarIcon: ({ color, size }) => <Ionicons name="search" color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: es.tabs.settings,
+          title: t.tabs.settings,
           tabBarIcon: ({ color, size }) => <Ionicons name="settings" color={color} size={size} />,
         }}
       />

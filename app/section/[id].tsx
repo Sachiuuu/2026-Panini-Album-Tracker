@@ -9,7 +9,8 @@ import { TeamCard } from '../../src/components/TeamCard';
 import { ALBUM, getSection } from '../../src/data/album';
 import { Sticker, Team } from '../../src/data/schema';
 import { TEAMS_BY_GROUP } from '../../src/data/teams';
-import { es } from '../../src/i18n/es';
+import { getSectionTitle } from '../../src/i18n/getSectionTitle';
+import { useStrings } from '../../src/i18n/useStrings';
 import { useAlbumStore } from '../../src/store/useAlbumStore';
 import { useSectionProgress } from '../../src/store/selectors';
 import { colors } from '../../src/theme/colors';
@@ -27,6 +28,7 @@ function applyFilter(
 }
 
 export default function SectionScreen() {
+  const t = useStrings();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const sectionId = id ?? '';
@@ -51,19 +53,21 @@ export default function SectionScreen() {
   if (!section) {
     return (
       <View style={styles.notFound}>
-        <Stack.Screen options={{ title: es.empty.noResults }} />
-        <EmptyState text={es.empty.noResults} icon="alert-circle" />
+        <Stack.Screen options={{ title: t.empty.noResults }} />
+        <EmptyState text={t.empty.noResults} icon="alert-circle" />
       </View>
     );
   }
 
+  const title = getSectionTitle(section, t);
+
   return (
     <View style={styles.screen}>
-      <Stack.Screen options={{ title: section.title }} />
+      <Stack.Screen options={{ title }} />
 
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <Text style={styles.title}>{section.title}</Text>
+          <Text style={styles.title}>{title}</Text>
           <Text style={styles.percent}>{formatPercent(progress.pct)}</Text>
         </View>
         <ProgressBar value={progress.pct} />
@@ -74,7 +78,7 @@ export default function SectionScreen() {
 
       {isGroup ? (
         <ScrollView contentContainerStyle={styles.teamsList}>
-          <Text style={styles.subheader}>{es.section.teamsInGroup}</Text>
+          <Text style={styles.subheader}>{t.section.teamsInGroup}</Text>
           {groupTeams.map((team) => {
             const teamStickers = section.stickers.filter(
               (s) => s.teamCode === team.code,
@@ -102,9 +106,9 @@ export default function SectionScreen() {
               value={filter}
               onChange={setFilter}
               labels={{
-                all: es.filter.all,
-                owned: es.filter.owned,
-                missing: es.filter.missing,
+                all: t.filter.all,
+                owned: t.filter.owned,
+                missing: t.filter.missing,
               }}
             />
           </View>
@@ -115,10 +119,10 @@ export default function SectionScreen() {
               <EmptyState
                 text={
                   filter === 'owned'
-                    ? es.empty.noOwned
+                    ? t.empty.noOwned
                     : filter === 'missing'
-                      ? es.empty.noMissing
-                      : es.empty.noResults
+                      ? t.empty.noMissing
+                      : t.empty.noResults
                 }
                 icon={filter === 'missing' ? 'trophy' : 'sparkles'}
               />

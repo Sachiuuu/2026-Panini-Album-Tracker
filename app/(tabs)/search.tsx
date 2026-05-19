@@ -8,7 +8,7 @@ import { SearchBar } from '../../src/components/SearchBar';
 import { ALBUM } from '../../src/data/album';
 import { Sticker, Team } from '../../src/data/schema';
 import { TEAMS } from '../../src/data/teams';
-import { es } from '../../src/i18n/es';
+import { useStrings } from '../../src/i18n/useStrings';
 import { useAlbumStore } from '../../src/store/useAlbumStore';
 import { colors } from '../../src/theme/colors';
 import { radius, spacing, typography } from '../../src/theme/typography';
@@ -27,6 +27,7 @@ function normalize(text: string): string {
 }
 
 export default function Search() {
+  const t = useStrings();
   const router = useRouter();
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebounced(query, 150);
@@ -56,7 +57,7 @@ export default function Search() {
 
     const result: Row[] = [];
     if (matchedTeams.length > 0) {
-      result.push({ kind: 'header', id: 'h-teams', title: es.search.teamsHeader });
+      result.push({ kind: 'header', id: 'h-teams', title: t.search.teamsHeader });
       for (const team of matchedTeams) {
         result.push({ kind: 'team', id: `team-${team.code}`, team });
       }
@@ -65,14 +66,14 @@ export default function Search() {
       result.push({
         kind: 'header',
         id: 'h-stickers',
-        title: es.search.stickersHeader,
+        title: t.search.stickersHeader,
       });
       for (const sticker of matchedStickers) {
         result.push({ kind: 'sticker', id: `st-${sticker.id}`, sticker });
       }
     }
     return result;
-  }, [debouncedQuery]);
+  }, [debouncedQuery, t]);
 
   const isEmpty = debouncedQuery.trim().length > 0 && rows.length === 0;
 
@@ -82,16 +83,16 @@ export default function Search() {
         <SearchBar
           value={query}
           onChange={setQuery}
-          placeholder={es.search.placeholder}
+          placeholder={t.search.placeholder}
         />
       </View>
 
       {debouncedQuery.trim().length === 0 ? (
         <View style={styles.intro}>
-          <EmptyState text={es.search.typeToSearch} icon="search" />
+          <EmptyState text={t.search.typeToSearch} icon="search" />
         </View>
       ) : isEmpty ? (
-        <EmptyState text={es.search.noResults} icon="sad" />
+        <EmptyState text={t.search.noResults} icon="sad" />
       ) : (
         <FlatList
           data={rows}
@@ -115,7 +116,7 @@ export default function Search() {
                   <View style={styles.rowBody}>
                     <Text style={styles.rowTitle}>{team.name}</Text>
                     <Text style={styles.rowHint}>
-                      {team.code} · {es.section.group} {team.group}
+                      {team.code} · {t.section.group} {team.group}
                     </Text>
                   </View>
                   <Ionicons

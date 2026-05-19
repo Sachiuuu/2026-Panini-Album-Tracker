@@ -1,4 +1,82 @@
-export const es = {
+export interface Strings {
+  appName: string;
+  tabs: { album: string; search: string; settings: string };
+  onboarding: {
+    title: string;
+    subtitle: string;
+    bullets: string[];
+    cta: string;
+  };
+  home: {
+    title: string;
+    sectionsHeader: string;
+    stats: {
+      collected: string;
+      missing: string;
+      emblems: string;
+      lineups: string;
+      top5: string;
+      bottom5: string;
+      of: string;
+    };
+  };
+  section: {
+    specials: string;
+    cocacola: string;
+    group: string;
+    teamsInGroup: string;
+  };
+  filter: { all: string; owned: string; missing: string };
+  search: {
+    placeholder: string;
+    noResults: string;
+    typeToSearch: string;
+    teamsHeader: string;
+    stickersHeader: string;
+  };
+  settings: {
+    title: string;
+    language: string;
+    export: string;
+    exportHint: string;
+    import: string;
+    importHint: string;
+    reset: string;
+    resetHint: string;
+    about: string;
+    version: string;
+    totalStickers: string;
+    developer: string;
+  };
+  importDialog: {
+    title: string;
+    message: string;
+    replace: string;
+    merge: string;
+    cancel: string;
+    successReplace: string;
+    successMerge: string;
+    errorTitle: string;
+    invalidFile: string;
+    versionTooNew: string;
+  };
+  resetDialog: {
+    title: string;
+    message: string;
+    confirm: string;
+    cancel: string;
+  };
+  exportDialog: { errorTitle: string; unavailable: string };
+  empty: { noOwned: string; noMissing: string; noResults: string };
+  common: {
+    loading: string;
+    percent: (v: number) => string;
+    fraction: (owned: number, total: number) => string;
+    complete: string;
+  };
+}
+
+export const es: Strings = {
   appName: 'WC 2026 Sticker Tracker',
 
   tabs: {
@@ -56,6 +134,7 @@ export const es = {
 
   settings: {
     title: 'Ajustes',
+    language: 'Idioma',
     export: 'Exportar mi álbum',
     exportHint: 'Comparte un archivo .json con tu progreso.',
     import: 'Importar desde archivo',
@@ -65,6 +144,7 @@ export const es = {
     about: 'Acerca de',
     version: 'Versión',
     totalStickers: 'Láminas en el álbum',
+    developer: 'Desarrollador',
   },
 
   importDialog: {
@@ -104,6 +184,4 @@ export const es = {
     fraction: (owned: number, total: number) => `${owned}/${total}`,
     complete: 'completo',
   },
-} as const;
-
-export type Strings = typeof es;
+};

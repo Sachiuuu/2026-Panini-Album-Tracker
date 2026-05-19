@@ -4,6 +4,8 @@ import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Section, Team } from '../data/schema';
 import { TEAMS_BY_GROUP } from '../data/teams';
+import { getSectionTitle } from '../i18n/getSectionTitle';
+import { useStrings } from '../i18n/useStrings';
 import { useAlbumStore } from '../store/useAlbumStore';
 import { useSectionProgress } from '../store/selectors';
 import { colors } from '../theme/colors';
@@ -24,10 +26,12 @@ interface TeamProgress {
 }
 
 export function GroupSectionCard({ section }: Props) {
+  const t = useStrings();
   const router = useRouter();
   const owned = useAlbumStore((s) => s.owned);
   const groupLetter = section.id.replace('group-', '');
   const sectionProgress = useSectionProgress(section.id);
+  const title = getSectionTitle(section, t);
 
   const teamRows: TeamProgress[] = useMemo(() => {
     const teams = TEAMS_BY_GROUP[groupLetter] ?? [];
@@ -54,7 +58,7 @@ export function GroupSectionCard({ section }: Props) {
         </View>
         <View style={styles.headerBody}>
           <View style={styles.headerRow}>
-            <Text style={styles.title}>{section.title}</Text>
+            <Text style={styles.title}>{title}</Text>
             <Text style={styles.percent}>{formatPercent(sectionProgress.pct)}</Text>
           </View>
           <ProgressBar value={sectionProgress.pct} height={6} />

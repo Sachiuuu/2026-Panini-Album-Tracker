@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ALBUM } from '../../src/data/album';
-import { es } from '../../src/i18n/es';
+import { useStrings } from '../../src/i18n/useStrings';
 import { useAlbumStore } from '../../src/store/useAlbumStore';
+import { Locale, useLocaleStore } from '../../src/store/useLocaleStore';
 import { colors } from '../../src/theme/colors';
 import { radius, spacing, typography } from '../../src/theme/typography';
 import {
@@ -15,6 +16,14 @@ import {
   ImportVersionError,
   pickAndReadAlbum,
 } from '../../src/utils/exportImport';
+
+const LOCALE_OPTIONS: { value: Locale; label: string }[] = [
+  { value: 'es', label: 'Español' },
+  { value: 'en', label: 'English' },
+  { value: 'fr', label: 'Français' },
+];
+
+const GITHUB_URL = 'https://github.com/Sachiuuu';
 
 interface RowProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -53,6 +62,9 @@ function Row({ icon, title, hint, onPress, destructive, disabled }: RowProps) {
 }
 
 export default function Settings() {
+  const t = useStrings();
+  const locale = useLocaleStore((s) => s.locale);
+  const setLocale = useLocaleStore((s) => s.setLocale);
   const owned = useAlbumStore((s) => s.owned);
   const replaceOwned = useAlbumStore((s) => s.replaceOwned);
   const mergeOwned = useAlbumStore((s) => s.mergeOwned);
@@ -61,12 +73,12 @@ export default function Settings() {
 
   const handleReset = () => {
     Alert.alert(
-      es.resetDialog.title,
-      es.resetDialog.message,
+      t.resetDialog.title,
+      t.resetDialog.message,
       [
-        { text: es.resetDialog.cancel, style: 'cancel' },
+        { text: t.resetDialog.cancel, style: 'cancel' },
         {
-          text: es.resetDialog.confirm,
+          text: t.resetDialog.confirm,
           style: 'destructive',
           onPress: () => resetAll(),
         },
@@ -84,9 +96,9 @@ export default function Settings() {
       await exportAlbumToShare(owned);
     } catch (err) {
       if (err instanceof ExportUnavailableError) {
-        Alert.alert(es.exportDialog.errorTitle, es.exportDialog.unavailable);
+        Alert.alert(t.exportDialog.errorTitle, t.exportDialog.unavailable);
       } else {
-        Alert.alert(es.exportDialog.errorTitle, String((err as Error).message ?? err));
+        Alert.alert(t.exportDialog.errorTitle, String((err as Error).message ?? err));
       }
     } finally {
       setBusy(false);
@@ -99,37 +111,37 @@ export default function Settings() {
     try {
       const parsed = await pickAndReadAlbum();
       Alert.alert(
-        es.importDialog.title,
-        es.importDialog.message,
+        t.importDialog.title,
+        t.importDialog.message,
         [
           {
-            text: es.importDialog.replace,
+            text: t.importDialog.replace,
             onPress: () => {
               replaceOwned(parsed.ownedMap);
-              Alert.alert(es.importDialog.title, es.importDialog.successReplace);
+              Alert.alert(t.importDialog.title, t.importDialog.successReplace);
             },
           },
           {
-            text: es.importDialog.merge,
+            text: t.importDialog.merge,
             onPress: () => {
               mergeOwned(parsed.ownedMap);
-              Alert.alert(es.importDialog.title, es.importDialog.successMerge);
+              Alert.alert(t.importDialog.title, t.importDialog.successMerge);
             },
           },
-          { text: es.importDialog.cancel, style: 'cancel' },
+          { text: t.importDialog.cancel, style: 'cancel' },
         ],
       );
     } catch (err) {
       if (err instanceof ImportCancelledError) return;
       if (err instanceof ImportVersionError) {
-        Alert.alert(es.importDialog.errorTitle, es.importDialog.versionTooNew);
+        Alert.alert(t.importDialog.errorTitle, t.importDialog.versionTooNew);
         return;
       }
       if (err instanceof ImportInvalidError) {
-        Alert.alert(es.importDialog.errorTitle, es.importDialog.invalidFile);
+        Alert.alert(t.importDialog.errorTitle, t.importDialog.invalidFile);
         return;
       }
-      Alert.alert(es.importDialog.errorTitle, String((err as Error).message ?? err));
+      Alert.alert(t.importDialog.errorTitle, String((err as Error).message ?? err));
     } finally {
       setBusy(false);
     }
@@ -137,20 +149,40 @@ export default function Settings() {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>{es.settings.title}</Text>
+      <Text style={styles.title}>{t.settings.title}</Text>
+
+      <View style={styles.group}>
+        <Text style={styles.groupLabel}>{t.settings.language}</Text>
+        <View style={styles.langRow}>
+          {LOCALE_OPTIONS.map(({ value, label }) => {
+            const active = locale === value;
+            return (
+              <Pressable
+                key={value}
+                onPress={() => setLocale(value)}
+                style={[styles.langBtn, active && styles.langBtnActive]}
+              >
+                <Text style={[styles.langBtnText, active && styles.langBtnTextActive]}>
+                  {label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
 
       <View style={styles.group}>
         <Row
           icon="cloud-upload"
-          title={es.settings.export}
-          hint={es.settings.exportHint}
+          title={t.settings.export}
+          hint={t.settings.exportHint}
           onPress={handleExport}
           disabled={busy}
         />
         <Row
           icon="cloud-download"
-          title={es.settings.import}
-          hint={es.settings.importHint}
+          title={t.settings.import}
+          hint={t.settings.importHint}
           onPress={handleImport}
           disabled={busy}
         />
@@ -159,8 +191,8 @@ export default function Settings() {
       <View style={styles.group}>
         <Row
           icon="trash"
-          title={es.settings.reset}
-          hint={es.settings.resetHint}
+          title={t.settings.reset}
+          hint={t.settings.resetHint}
           onPress={handleReset}
           destructive
           disabled={busy}
@@ -168,15 +200,23 @@ export default function Settings() {
       </View>
 
       <View style={styles.about}>
-        <Text style={styles.aboutTitle}>{es.settings.about}</Text>
+        <Text style={styles.aboutTitle}>{t.settings.about}</Text>
         <View style={styles.aboutRow}>
-          <Text style={styles.aboutLabel}>{es.settings.version}</Text>
+          <Text style={styles.aboutLabel}>{t.settings.version}</Text>
           <Text style={styles.aboutValue}>{appVersion}</Text>
         </View>
         <View style={styles.aboutRow}>
-          <Text style={styles.aboutLabel}>{es.settings.totalStickers}</Text>
+          <Text style={styles.aboutLabel}>{t.settings.totalStickers}</Text>
           <Text style={styles.aboutValue}>{ALBUM.totalStickers}</Text>
         </View>
+        <View style={styles.aboutDivider} />
+        <Pressable
+          onPress={() => Linking.openURL(GITHUB_URL)}
+          style={({ pressed }) => [styles.aboutRow, pressed && { opacity: 0.7 }]}
+        >
+          <Text style={styles.aboutLabel}>{t.settings.developer}</Text>
+          <Text style={[styles.aboutValue, styles.link]}>@Sachiuuu</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -187,6 +227,37 @@ const styles = StyleSheet.create({
   content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
   title: { ...typography.h1, color: colors.textPrimary },
   group: { gap: spacing.md },
+  groupLabel: {
+    ...typography.smallBold,
+    color: colors.textMuted,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  langRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  langBtn: {
+    flex: 1,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+  },
+  langBtnActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  langBtnText: {
+    ...typography.smallBold,
+    color: colors.textSecondary,
+  },
+  langBtnTextActive: {
+    color: colors.bg,
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -217,4 +288,10 @@ const styles = StyleSheet.create({
   },
   aboutLabel: { ...typography.body, color: colors.textSecondary },
   aboutValue: { ...typography.bodyBold, color: colors.textPrimary },
+  aboutDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: spacing.xs,
+  },
+  link: { color: colors.accent },
 });

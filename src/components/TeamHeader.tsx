@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { getCountryStyle } from '../data/countryColors';
 import { Team } from '../data/schema';
-import { es } from '../i18n/es';
+import { useStrings } from '../i18n/useStrings';
 import { colors } from '../theme/colors';
 import { spacing, typography } from '../theme/typography';
 import { formatFraction, formatPercent } from '../utils/format';
@@ -16,6 +16,7 @@ interface Props {
 }
 
 export function TeamHeader({ team, owned, total, pct }: Props) {
+  const t = useStrings();
   const style = getCountryStyle(team.countryCode);
   return (
     <View style={[styles.container, { backgroundColor: style.primary }]}>
@@ -26,7 +27,7 @@ export function TeamHeader({ team, owned, total, pct }: Props) {
             {team.name}
           </Text>
           <Text style={[styles.group, { color: style.text }]}>
-            {es.section.group} {team.group}
+            {t.section.group} {team.group}
           </Text>
         </View>
       </View>

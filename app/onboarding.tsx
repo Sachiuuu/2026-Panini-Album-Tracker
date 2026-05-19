@@ -2,12 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { es } from '../src/i18n/es';
+import { useStrings } from '../src/i18n/useStrings';
 import { useAlbumStore } from '../src/store/useAlbumStore';
 import { colors } from '../src/theme/colors';
 import { radius, spacing, typography } from '../src/theme/typography';
 
 export default function Onboarding() {
+  const t = useStrings();
   const router = useRouter();
   const markOnboarded = useAlbumStore((s) => s.markOnboarded);
 
@@ -22,11 +23,11 @@ export default function Onboarding() {
         <View style={styles.iconWrap}>
           <Ionicons name="football" size={64} color={colors.accent} />
         </View>
-        <Text style={styles.title}>{es.onboarding.title}</Text>
-        <Text style={styles.subtitle}>{es.onboarding.subtitle}</Text>
+        <Text style={styles.title}>{t.onboarding.title}</Text>
+        <Text style={styles.subtitle}>{t.onboarding.subtitle}</Text>
 
         <View style={styles.bullets}>
-          {es.onboarding.bullets.map((line) => (
+          {t.onboarding.bullets.map((line) => (
             <View key={line} style={styles.bullet}>
               <Ionicons
                 name="checkmark-circle"
@@ -45,7 +46,7 @@ export default function Onboarding() {
             pressed && { opacity: 0.85 },
           ]}
         >
-          <Text style={styles.ctaText}>{es.onboarding.cta}</Text>
+          <Text style={styles.ctaText}>{t.onboarding.cta}</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>

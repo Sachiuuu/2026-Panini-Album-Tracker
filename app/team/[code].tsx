@@ -7,7 +7,7 @@ import { StickerGrid } from '../../src/components/StickerGrid';
 import { TeamHeader } from '../../src/components/TeamHeader';
 import { ALBUM, getTeamStickers } from '../../src/data/album';
 import { Sticker } from '../../src/data/schema';
-import { es } from '../../src/i18n/es';
+import { useStrings } from '../../src/i18n/useStrings';
 import { useAlbumStore } from '../../src/store/useAlbumStore';
 import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/typography';
@@ -24,6 +24,7 @@ function applyFilter(
 }
 
 export default function TeamScreen() {
+  const t = useStrings();
   const { code } = useLocalSearchParams<{ code: string }>();
   const teamCode = code ?? '';
   const team = ALBUM.teamByCode[teamCode];
@@ -44,8 +45,8 @@ export default function TeamScreen() {
   if (!team) {
     return (
       <View style={styles.notFound}>
-        <Stack.Screen options={{ title: es.empty.noResults }} />
-        <EmptyState text={es.empty.noResults} icon="alert-circle" />
+        <Stack.Screen options={{ title: t.empty.noResults }} />
+        <EmptyState text={t.empty.noResults} icon="alert-circle" />
       </View>
     );
   }
@@ -64,9 +65,9 @@ export default function TeamScreen() {
           value={filter}
           onChange={setFilter}
           labels={{
-            all: es.filter.all,
-            owned: es.filter.owned,
-            missing: es.filter.missing,
+            all: t.filter.all,
+            owned: t.filter.owned,
+            missing: t.filter.missing,
           }}
         />
       </View>
@@ -77,10 +78,10 @@ export default function TeamScreen() {
           <EmptyState
             text={
               filter === 'owned'
-                ? es.empty.noOwned
+                ? t.empty.noOwned
                 : filter === 'missing'
-                  ? es.empty.noMissing
-                  : es.empty.noResults
+                  ? t.empty.noMissing
+                  : t.empty.noResults
             }
             icon={filter === 'missing' ? 'trophy' : 'sparkles'}
           />
