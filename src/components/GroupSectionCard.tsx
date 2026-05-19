@@ -9,10 +9,25 @@ import { useStrings } from '../i18n/useStrings';
 import { useAlbumStore } from '../store/useAlbumStore';
 import { useSectionProgress } from '../store/selectors';
 import { colors } from '../theme/colors';
-import { radius, spacing, typography } from '../theme/typography';
+import { fonts, radius, spacing, typography } from '../theme/typography';
 import { formatFraction, formatPercent, pct as pctOf } from '../utils/format';
 import { Flag } from './Flag';
 import { ProgressBar } from './ProgressBar';
+
+const GROUP_COLORS: Record<string, string> = {
+  A: '#5AB040',
+  B: '#CD3035',
+  C: '#C4D43E',
+  D: '#2E7DC8',
+  E: '#F08028',
+  F: '#DC4E4E',
+  G: '#9178BC',
+  H: '#2EAA9C',
+  I: '#E07898',
+  J: '#1E8870',
+  K: '#CF3C7A',
+  L: '#8C2038',
+};
 
 interface Props {
   section: Section;
@@ -53,8 +68,8 @@ export function GroupSectionCard({ section }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <View style={styles.iconWrap}>
-          <Ionicons name="people" size={20} color={colors.accent} />
+        <View style={[styles.iconWrap, { backgroundColor: GROUP_COLORS[groupLetter] ?? colors.surfaceAlt }]}>
+          <Text style={styles.groupLetter}>{groupLetter}</Text>
         </View>
         <View style={styles.headerBody}>
           <View style={styles.headerRow}>
@@ -118,10 +133,15 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 40,
     height: 40,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  groupLetter: {
+    fontFamily: fonts.display,
+    fontSize: 22,
+    color: '#ffffff',
+    lineHeight: 26,
   },
   headerBody: {
     flex: 1,
