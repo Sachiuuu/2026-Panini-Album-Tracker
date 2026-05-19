@@ -47,7 +47,7 @@ export default function RootLayout() {
         >
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
-          <Stack.Screen name="section/[id]" options={{ headerShown: true, title: '' }} />
+          <Stack.Screen name="section/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="team/[code]" options={{ headerShown: false }} />
         </Stack>
       </HydrationGate>

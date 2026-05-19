@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { GroupSectionCard } from '../../src/components/GroupSectionCard';
 import { ProgressBar } from '../../src/components/ProgressBar';
 import { SectionCard } from '../../src/components/SectionCard';
@@ -30,6 +30,12 @@ export default function AlbumHome() {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      <Image
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        source={require('../../assets/trophy.png')}
+        style={styles.trophy}
+        resizeMode="contain"
+      />
       <Text style={styles.title}>{t.home.title}</Text>
 
       <LinearGradient
@@ -80,6 +86,13 @@ export default function AlbumHome() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
+  trophy: {
+    width: '100%',
+    height: 180,
+    alignSelf: 'center',
+    marginTop: -spacing.lg,
+    marginBottom: -spacing.sm,
+  },
   title: { ...typography.h1, color: colors.textPrimary },
 
   hero: {

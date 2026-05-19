@@ -1,6 +1,8 @@
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState } from '../../src/components/EmptyState';
 import { FilterMode, FilterSegmented } from '../../src/components/FilterSegmented';
 import { ProgressBar } from '../../src/components/ProgressBar';
@@ -15,7 +17,7 @@ import { useStrings } from '../../src/i18n/useStrings';
 import { useAlbumStore } from '../../src/store/useAlbumStore';
 import { useSectionProgress } from '../../src/store/selectors';
 import { colors } from '../../src/theme/colors';
-import { radius, spacing, typography } from '../../src/theme/typography';
+import { spacing, typography } from '../../src/theme/typography';
 import { formatFraction, formatPercent, pct as pctOf } from '../../src/utils/format';
 
 function applyFilter(
@@ -32,6 +34,7 @@ export default function SectionScreen() {
   const t = useStrings();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const sectionId = id ?? '';
   const section = getSection(sectionId);
   const progress = useSectionProgress(sectionId);
@@ -53,8 +56,10 @@ export default function SectionScreen() {
 
   if (!section) {
     return (
-      <View style={styles.notFound}>
-        <Stack.Screen options={{ title: t.empty.noResults }} />
+      <View style={[styles.notFound, { paddingTop: insets.top }]}>
+        <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+          <Ionicons name="chevron-back" size={28} color={colors.textPrimary} />
+        </Pressable>
         <EmptyState text={t.empty.noResults} icon="alert-circle" />
       </View>
     );
@@ -67,14 +72,26 @@ export default function SectionScreen() {
 
   return (
     <View style={styles.screen}>
-      <Stack.Screen options={{ title }} />
-
-      <View style={[styles.header, { backgroundColor: groupColor, borderBottomColor: groupColor }]}>
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: groupColor, paddingTop: insets.top + spacing.sm },
+        ]}
+      >
+        <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+          <Ionicons name="chevron-back" size={28} color={headerTextColor} />
+        </Pressable>
         <View style={styles.headerRow}>
           <Text style={[styles.title, { color: headerTextColor }]}>{title}</Text>
-          <Text style={[styles.percent, { color: headerTextColor }]}>{formatPercent(progress.pct)}</Text>
+          <Text style={[styles.percent, { color: headerTextColor }]}>
+            {formatPercent(progress.pct)}
+          </Text>
         </View>
-        <ProgressBar value={progress.pct} tint="rgba(255,255,255,0.9)" trackColor="rgba(0,0,0,0.2)" />
+        <ProgressBar
+          value={progress.pct}
+          tint="rgba(255,255,255,0.9)"
+          trackColor="rgba(0,0,0,0.2)"
+        />
         <Text style={[styles.fraction, { color: headerMutedColor }]}>
           {formatFraction(progress.owned, progress.total)}
         </Text>
@@ -148,11 +165,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   header: {
-    padding: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.lg,
     gap: spacing.sm,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  },
+  backBtn: {
+    alignSelf: 'flex-start',
+    padding: 4,
+    marginBottom: spacing.xs,
   },
   headerRow: {
     flexDirection: 'row',
@@ -160,9 +180,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingRight: spacing.sm,
   },
-  title: { ...typography.h2, color: colors.textPrimary, flexShrink: 1 },
-  percent: { ...typography.h3, color: colors.accent, flexShrink: 0, minWidth: 52, textAlign: 'right' },
-  fraction: { ...typography.small, color: colors.textMuted },
+  title: { ...typography.h2, flexShrink: 1 },
+  percent: { ...typography.h3, flexShrink: 0, minWidth: 52, textAlign: 'right' },
+  fraction: { ...typography.small },
   filterRow: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
