@@ -67,12 +67,12 @@ const styles = StyleSheet.create({
   },
   code: {
     ...typography.bodyBold,
-    fontSize: 13,
+    fontSize: 14,
     letterSpacing: 0.3,
   },
   check: {
     position: 'absolute',
-    top: 4,
-    right: 4,
+    top: 5,
+    right: 5,
   },
 });

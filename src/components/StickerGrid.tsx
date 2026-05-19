@@ -1,7 +1,10 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, useWindowDimensions } from 'react-native';
 import { Sticker } from '../data/schema';
 import { spacing } from '../theme/typography';
 import { StickerTile } from './StickerTile';
+
+const LIST_PADDING = spacing.lg;
+const COL_GAP = spacing.md;
 
 interface Props {
   stickers: Sticker[];
@@ -16,6 +19,11 @@ export function StickerGrid({
   ListHeaderComponent,
   ListEmptyComponent,
 }: Props) {
+  const { width } = useWindowDimensions();
+  const tileSize = Math.floor(
+    (width - LIST_PADDING * 2 - COL_GAP * (numColumns - 1)) / numColumns,
+  );
+
   return (
     <FlatList
       data={stickers}
@@ -23,11 +31,7 @@ export function StickerGrid({
       numColumns={numColumns}
       columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
       contentContainerStyle={styles.list}
-      renderItem={({ item }) => (
-        <View style={styles.item}>
-          <StickerTile sticker={item} />
-        </View>
-      )}
+      renderItem={({ item }) => <StickerTile sticker={item} size={tileSize} />}
       initialNumToRender={32}
       windowSize={7}
       removeClippedSubviews
@@ -39,14 +43,12 @@ export function StickerGrid({
 
 const styles = StyleSheet.create({
   list: {
-    padding: spacing.lg,
-    gap: spacing.md,
+    padding: LIST_PADDING,
+    gap: COL_GAP,
     paddingBottom: spacing.xxl,
   },
   row: {
-    gap: spacing.md,
-  },
-  item: {
-    alignItems: 'center',
+    gap: COL_GAP,
+    justifyContent: 'center',
   },
 });
