@@ -9,7 +9,7 @@ import {
 } from '../store/selectors';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/typography';
-import { formatFraction } from '../utils/format';
+import { formatFraction, formatPercent, pct as pctOf } from '../utils/format';
 import { CollapsibleRankBlock } from './CollapsibleRankBlock';
 import { StatTile } from './StatTile';
 
@@ -27,14 +27,14 @@ export function StatsDashboard() {
         <StatTile
           label={t.home.stats.collected.toUpperCase()}
           value={String(global.owned)}
-          hint={`${t.home.stats.of} ${global.total}`}
+          hint={`${formatPercent(global.pct)} ${t.home.stats.of} ${global.total}`}
           icon="checkmark-circle"
           tint={colors.success}
         />
         <StatTile
           label={t.home.stats.missing.toUpperCase()}
           value={String(global.missing)}
-          hint={`${t.home.stats.of} ${global.total}`}
+          hint={`${formatPercent(pctOf(global.missing, global.total))} ${t.home.stats.of} ${global.total}`}
           icon="ellipse-outline"
           tint={colors.danger}
         />
@@ -44,12 +44,14 @@ export function StatsDashboard() {
         <StatTile
           label={t.home.stats.emblems.toUpperCase()}
           value={formatFraction(emblems.owned, emblems.total)}
+          hint={formatPercent(pctOf(emblems.owned, emblems.total))}
           icon="shield"
           tint={colors.accent}
         />
         <StatTile
           label={t.home.stats.lineups.toUpperCase()}
           value={formatFraction(lineups.owned, lineups.total)}
+          hint={formatPercent(pctOf(lineups.owned, lineups.total))}
           icon="people-circle"
           tint={colors.accent}
         />
