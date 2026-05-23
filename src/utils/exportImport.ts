@@ -1,6 +1,7 @@
 import * as DocumentPicker from 'expo-document-picker';
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import { Platform } from 'react-native';
 import { ALBUM } from '../data/album';
 import { ALBUM_SCHEMA_VERSION } from '../data/schema';
 
@@ -26,28 +27,42 @@ export function buildExportPayload(owned: Record<string, true>): ExportPayload {
   };
 }
 
+function downloadJsonOnWeb(json: string, filename: string): void {
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export class ExportUnavailableError extends Error {}
 
 export async function exportAlbumToShare(
   owned: Record<string, true>,
 ): Promise<void> {
-  if (!(await Sharing.isAvailableAsync())) {
-    throw new ExportUnavailableError('Sharing is not available on this device.');
-  }
-
   const stamp = new Date()
     .toISOString()
     .replace(/[:.]/g, '-')
     .replace(/T/, '-')
     .slice(0, 19);
   const filename = `panini-2026-${stamp}.json`;
+  const payload = buildExportPayload(owned);
+  const json = JSON.stringify(payload, null, 2);
+
+  if (Platform.OS === 'web') {
+    downloadJsonOnWeb(json, filename);
+    return;
+  }
+
+  if (!(await Sharing.isAvailableAsync())) {
+    throw new ExportUnavailableError('Sharing is not available on this device.');
+  }
   const file = new File(Paths.cache, filename);
   if (file.exists) file.delete();
   file.create();
-
-  const payload = buildExportPayload(owned);
-  file.write(JSON.stringify(payload, null, 2));
-
+  file.write(json);
   await Sharing.shareAsync(file.uri, {
     mimeType: 'application/json',
     dialogTitle: 'Exportar álbum',
@@ -72,22 +87,13 @@ export async function exportMissingToShare(
   owned: Record<string, true>,
   allStickerIds: string[],
 ): Promise<void> {
-  if (!(await Sharing.isAvailableAsync())) {
-    throw new ExportUnavailableError('Sharing is not available on this device.');
-  }
-
   const missingIds = allStickerIds.filter((id) => !owned[id]).sort();
-
   const stamp = new Date()
     .toISOString()
     .replace(/[:.]/g, '-')
     .replace(/T/, '-')
     .slice(0, 19);
   const filename = `panini-2026-missing-${stamp}.json`;
-  const file = new File(Paths.cache, filename);
-  if (file.exists) file.delete();
-  file.create();
-
   const payload: MissingExportPayload = {
     schema: MISSING_SCHEMA_NAME,
     version: ALBUM_SCHEMA_VERSION,
@@ -95,8 +101,20 @@ export async function exportMissingToShare(
     appVersion: APP_VERSION,
     missing: missingIds,
   };
-  file.write(JSON.stringify(payload, null, 2));
+  const json = JSON.stringify(payload, null, 2);
 
+  if (Platform.OS === 'web') {
+    downloadJsonOnWeb(json, filename);
+    return;
+  }
+
+  if (!(await Sharing.isAvailableAsync())) {
+    throw new ExportUnavailableError('Sharing is not available on this device.');
+  }
+  const file = new File(Paths.cache, filename);
+  if (file.exists) file.delete();
+  file.create();
+  file.write(json);
   await Sharing.shareAsync(file.uri, {
     mimeType: 'application/json',
     dialogTitle: 'Exportar faltantes',
