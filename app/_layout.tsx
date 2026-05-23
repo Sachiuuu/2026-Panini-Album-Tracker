@@ -113,6 +113,7 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
         <Stack.Screen name="section/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="team/[code]" options={{ headerShown: false }} />
+        <Stack.Screen name="friend/[id]" options={{ headerShown: false }} />
       </Stack>
     </HydrationGate>
   );

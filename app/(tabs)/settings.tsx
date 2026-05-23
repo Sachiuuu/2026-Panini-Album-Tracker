@@ -10,6 +10,7 @@ import { colors } from '../../src/theme/colors';
 import { radius, spacing, typography } from '../../src/theme/typography';
 import {
   exportAlbumToShare,
+  exportMissingToShare,
   ExportUnavailableError,
   ImportCancelledError,
   ImportInvalidError,
@@ -111,6 +112,24 @@ export default function Settings() {
     }
   };
 
+  const handleExportMissing = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await exportMissingToShare(owned, Object.keys(ALBUM.stickerById));
+    } catch (err) {
+      if (Platform.OS === 'web') {
+        window.alert(`${t.exportDialog.errorTitle}: ${err instanceof ExportUnavailableError ? t.exportDialog.unavailable : String((err as Error).message ?? err)}`);
+      } else if (err instanceof ExportUnavailableError) {
+        Alert.alert(t.exportDialog.errorTitle, t.exportDialog.unavailable);
+      } else {
+        Alert.alert(t.exportDialog.errorTitle, String((err as Error).message ?? err));
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const handleImport = async () => {
     if (busy) return;
     setBusy(true);
@@ -192,6 +211,13 @@ export default function Settings() {
           title={t.settings.export}
           hint={t.settings.exportHint}
           onPress={handleExport}
+          disabled={busy}
+        />
+        <Row
+          icon="list-outline"
+          title={t.settings.exportMissing}
+          hint={t.settings.exportMissingHint}
+          onPress={handleExportMissing}
           disabled={busy}
         />
         <Row

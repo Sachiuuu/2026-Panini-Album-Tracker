@@ -5,6 +5,7 @@ import { ALBUM } from '../data/album';
 import { ALBUM_SCHEMA_VERSION } from '../data/schema';
 
 const SCHEMA_NAME = 'panini-2026-tracker';
+const MISSING_SCHEMA_NAME = 'panini-2026-tracker-missing';
 const APP_VERSION = '0.1.0';
 
 export interface ExportPayload {
@@ -50,6 +51,55 @@ export async function exportAlbumToShare(
   await Sharing.shareAsync(file.uri, {
     mimeType: 'application/json',
     dialogTitle: 'Exportar álbum',
+    UTI: 'public.json',
+  });
+}
+
+export interface MissingExportPayload {
+  schema: string;
+  version: number;
+  exportedAt: string;
+  appVersion: string;
+  missing: string[];
+}
+
+export interface ParsedMissingImport {
+  missing: string[];
+  unknownIds: string[];
+}
+
+export async function exportMissingToShare(
+  owned: Record<string, true>,
+  allStickerIds: string[],
+): Promise<void> {
+  if (!(await Sharing.isAvailableAsync())) {
+    throw new ExportUnavailableError('Sharing is not available on this device.');
+  }
+
+  const missingIds = allStickerIds.filter((id) => !owned[id]).sort();
+
+  const stamp = new Date()
+    .toISOString()
+    .replace(/[:.]/g, '-')
+    .replace(/T/, '-')
+    .slice(0, 19);
+  const filename = `panini-2026-missing-${stamp}.json`;
+  const file = new File(Paths.cache, filename);
+  if (file.exists) file.delete();
+  file.create();
+
+  const payload: MissingExportPayload = {
+    schema: MISSING_SCHEMA_NAME,
+    version: ALBUM_SCHEMA_VERSION,
+    exportedAt: new Date().toISOString(),
+    appVersion: APP_VERSION,
+    missing: missingIds,
+  };
+  file.write(JSON.stringify(payload, null, 2));
+
+  await Sharing.shareAsync(file.uri, {
+    mimeType: 'application/json',
+    dialogTitle: 'Exportar faltantes',
     UTI: 'public.json',
   });
 }
@@ -109,4 +159,47 @@ export async function pickAndReadAlbum(): Promise<ParsedImport> {
     else unknownIds.push(id);
   }
   return { payload, ownedMap, unknownIds };
+}
+
+export async function pickAndReadMissingList(): Promise<ParsedMissingImport> {
+  const result = await DocumentPicker.getDocumentAsync({
+    type: 'application/json',
+    copyToCacheDirectory: true,
+    multiple: false,
+  });
+  if (result.canceled) throw new ImportCancelledError('cancelled');
+  const asset = result.assets[0];
+  if (!asset?.uri) throw new ImportInvalidError('no-asset');
+
+  const file = new File(asset.uri);
+  if (!file.exists) throw new ImportInvalidError('not-found');
+  const text = await file.text();
+
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    throw new ImportInvalidError('invalid-json');
+  }
+  if (
+    !json ||
+    typeof json !== 'object' ||
+    (json as MissingExportPayload).schema !== MISSING_SCHEMA_NAME ||
+    typeof (json as MissingExportPayload).version !== 'number' ||
+    !Array.isArray((json as MissingExportPayload).missing)
+  ) {
+    throw new ImportInvalidError('invalid-shape');
+  }
+  const payload = json as MissingExportPayload;
+  if (payload.version > ALBUM_SCHEMA_VERSION) {
+    throw new ImportVersionError('version-too-new');
+  }
+
+  const missing: string[] = [];
+  const unknownIds: string[] = [];
+  for (const id of payload.missing) {
+    if (ALBUM.stickerById[id]) missing.push(id);
+    else unknownIds.push(id);
+  }
+  return { missing, unknownIds };
 }

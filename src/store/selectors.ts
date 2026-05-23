@@ -5,6 +5,7 @@ import { Section, Sticker, StickerKind, Team } from '../data/schema';
 import { TEAMS } from '../data/teams';
 import { pct } from '../utils/format';
 import { useAlbumStore } from './useAlbumStore';
+import { useFriendsStore } from './useFriendsStore';
 import { useLocaleStore } from './useLocaleStore';
 
 export interface ProgressInfo {
@@ -55,7 +56,8 @@ export function useStickerOwned(id: string): boolean {
 export function useHydrated(): boolean {
   const albumReady = useAlbumStore((s) => s._hasHydrated);
   const localeReady = useLocaleStore((s) => s._hasHydrated);
-  return albumReady && localeReady;
+  const friendsReady = useFriendsStore((s) => s._hasHydrated);
+  return albumReady && localeReady && friendsReady;
 }
 
 export function useOnboarded(): boolean {

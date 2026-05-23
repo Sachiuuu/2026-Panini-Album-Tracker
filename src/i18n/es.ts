@@ -1,6 +1,6 @@
 export interface Strings {
   appName: string;
-  tabs: { album: string; search: string; settings: string };
+  tabs: { album: string; search: string; settings: string; friends: string };
   onboarding: {
     title: string;
     subtitle: string;
@@ -49,6 +49,8 @@ export interface Strings {
     version: string;
     totalStickers: string;
     developer: string;
+    exportMissing: string;
+    exportMissingHint: string;
   };
   importDialog: {
     title: string;
@@ -69,6 +71,28 @@ export interface Strings {
     cancel: string;
   };
   exportDialog: { errorTitle: string; unavailable: string };
+  friends: {
+    title: string;
+    emptyTitle: string;
+    emptyHint: string;
+    importFriend: string;
+    youCanGive: string;
+    theyNeed: string;
+    stickersCount: (n: number) => string;
+    canGiveCount: (n: number) => string;
+    removeFriend: string;
+    renameFriend: string;
+  };
+  friendImportDialog: {
+    title: string;
+    namePlaceholder: string;
+    confirm: string;
+    cancel: string;
+    errorTitle: string;
+    invalidFile: string;
+    versionTooNew: string;
+    successMessage: (name: string) => string;
+  };
   empty: { noOwned: string; noMissing: string; noResults: string };
   common: {
     loading: string;
@@ -86,6 +110,7 @@ export const es: Strings = {
     album: 'Inicio',
     search: 'Buscar',
     settings: 'Ajustes',
+    friends: 'Amigos',
   },
 
   onboarding: {
@@ -158,6 +183,8 @@ export const es: Strings = {
     version: 'Versión',
     totalStickers: 'Láminas en el álbum',
     developer: 'Desarrollador',
+    exportMissing: 'Exportar mis faltantes',
+    exportMissingHint: 'Comparte un archivo con las láminas que te faltan.',
   },
 
   importDialog: {
@@ -183,6 +210,30 @@ export const es: Strings = {
   exportDialog: {
     errorTitle: 'No se pudo exportar',
     unavailable: 'No es posible compartir desde este dispositivo.',
+  },
+
+  friends: {
+    title: 'Intercambio',
+    emptyTitle: 'Sin amigos aún',
+    emptyHint: 'Importa la lista de faltantes de un amigo para ver qué láminas puedes darle.',
+    importFriend: 'Importar lista de un amigo',
+    youCanGive: 'Puedes darle',
+    theyNeed: 'Les hacen falta',
+    stickersCount: (n: number) => `${n} láminas`,
+    canGiveCount: (n: number) => `Puedes darle ${n}`,
+    removeFriend: 'Eliminar',
+    renameFriend: 'Renombrar',
+  },
+
+  friendImportDialog: {
+    title: 'Nombrar amigo',
+    namePlaceholder: 'Ej: Juan',
+    confirm: 'Guardar',
+    cancel: 'Cancelar',
+    errorTitle: 'No se pudo importar',
+    invalidFile: 'El archivo no es válido o no es una lista de faltantes.',
+    versionTooNew: 'Este archivo es de una versión más nueva. Actualiza la app.',
+    successMessage: (name: string) => `Lista de ${name} importada.`,
   },
 
   empty: {

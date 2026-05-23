@@ -7,6 +7,7 @@ export const fr: Strings = {
     album: 'Accueil',
     search: 'Rechercher',
     settings: 'Paramètres',
+    friends: 'Amis',
   },
 
   onboarding: {
@@ -79,6 +80,8 @@ export const fr: Strings = {
     version: 'Version',
     totalStickers: "Stickers dans l'album",
     developer: 'Développeur',
+    exportMissing: 'Exporter mes manquants',
+    exportMissingHint: 'Partagez un fichier avec les stickers qui vous manquent.',
   },
 
   importDialog: {
@@ -104,6 +107,30 @@ export const fr: Strings = {
   exportDialog: {
     errorTitle: "Impossible d'exporter",
     unavailable: "Le partage n'est pas disponible sur cet appareil.",
+  },
+
+  friends: {
+    title: 'Échange',
+    emptyTitle: 'Aucun ami pour l\'instant',
+    emptyHint: 'Importez la liste des manquants d\'un ami pour voir quels stickers vous pouvez lui donner.',
+    importFriend: 'Importer la liste d\'un ami',
+    youCanGive: 'Tu peux lui donner',
+    theyNeed: 'Il leur manque',
+    stickersCount: (n: number) => `${n} stickers`,
+    canGiveCount: (n: number) => `Tu peux lui donner ${n}`,
+    removeFriend: 'Supprimer',
+    renameFriend: 'Renommer',
+  },
+
+  friendImportDialog: {
+    title: 'Nommer cet ami',
+    namePlaceholder: 'Ex : Juan',
+    confirm: 'Enregistrer',
+    cancel: 'Annuler',
+    errorTitle: 'Impossible d\'importer',
+    invalidFile: 'Le fichier n\'est pas valide ou n\'est pas une liste de manquants.',
+    versionTooNew: 'Ce fichier provient d\'une version plus récente. Veuillez mettre à jour l\'application.',
+    successMessage: (name: string) => `Liste de ${name} importée.`,
   },
 
   empty: {

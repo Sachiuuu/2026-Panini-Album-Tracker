@@ -7,6 +7,7 @@ export const en: Strings = {
     album: 'Home',
     search: 'Search',
     settings: 'Settings',
+    friends: 'Friends',
   },
 
   onboarding: {
@@ -79,6 +80,8 @@ export const en: Strings = {
     version: 'Version',
     totalStickers: 'Stickers in album',
     developer: 'Developer',
+    exportMissing: 'Export my missing stickers',
+    exportMissingHint: 'Share a file with the stickers you still need.',
   },
 
   importDialog: {
@@ -104,6 +107,30 @@ export const en: Strings = {
   exportDialog: {
     errorTitle: 'Could not export',
     unavailable: 'Sharing is not available on this device.',
+  },
+
+  friends: {
+    title: 'Exchange',
+    emptyTitle: 'No friends yet',
+    emptyHint: "Import a friend's missing list to see which stickers you can give them.",
+    importFriend: "Import a friend's list",
+    youCanGive: 'You can give them',
+    theyNeed: 'They still need',
+    stickersCount: (n: number) => `${n} stickers`,
+    canGiveCount: (n: number) => `You can give ${n}`,
+    removeFriend: 'Remove',
+    renameFriend: 'Rename',
+  },
+
+  friendImportDialog: {
+    title: 'Name this friend',
+    namePlaceholder: 'e.g. Juan',
+    confirm: 'Save',
+    cancel: 'Cancel',
+    errorTitle: 'Could not import',
+    invalidFile: 'The file is not valid or is not a missing stickers list.',
+    versionTooNew: 'This file is from a newer version. Please update the app.',
+    successMessage: (name: string) => `${name}'s list imported.`,
   },
 
   empty: {

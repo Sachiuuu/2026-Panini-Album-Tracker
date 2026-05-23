@@ -55,6 +55,13 @@ export default function TabsLayout() {
           tabBarIcon: tabIcon('settings-outline', 'settings'),
         }}
       />
+      <Tabs.Screen
+        name="friends"
+        options={{
+          title: t.tabs.friends,
+          tabBarIcon: tabIcon('people-outline', 'people'),
+        }}
+      />
     </Tabs>
   );
 }
